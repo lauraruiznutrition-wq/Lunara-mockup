@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Lunara</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #FAF6F1; --card: #FFFFFF; --card2: #F2EBE3;
+  --burgundy: #6B1A2A; --burg-soft: rgba(107,26,42,0.07);
+  --gold: #C4963A; --text: #2C1A1A; --muted: #9B7B7B;
+  --border: rgba(107,26,42,0.10);
+  --green: #2E7D32; --green-bg: #E8F5E9;
+  --amber: #F57F17; --amber-bg: #FFF8E1;
+  --nav-h: 64px;
+}
+body {
+  background: #DDD5CC;
+  display: flex; justify-content: center; align-items: flex-start;
+  min-height: 100vh; padding: 24px 0 40px;
+  font-family: 'DM Sans', sans-serif;
+}
+.phone {
+  width: 375px; min-height: 812px; background: var(--bg);
+  border-radius: 44px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.25), 0 0 0 10px #1A1A1A, 0 0 0 12px #333;
+  overflow: hidden; display: flex; flex-direction: column; position: relative;
+}
+@media (max-width: 430px) {
+  body { background: var(--bg); padding: 0; align-items: stretch; }
+  .phone {
+    width: 100%; min-height: 100vh; border-radius: 0;
+    box-shadow: none;
+  }
+  .status-bar { padding: 44px 22px 8px; }
+}
+.status-bar {
+  background: var(--burgundy); padding: 12px 22px 8px;
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: rgba(255,255,255,0.65); font-weight: 500; flex-shrink: 0;
+}
+
+/* ONBOARDING */
+#onboarding { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
+.ob-luni-bar { background: var(--burgundy); padding: 14px 20px 18px; display: flex; align-items: center; gap: 12px; color: white; }
+.ob-avatar { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+.ob-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; }
+.ob-sub { font-size: 11px; opacity: 0.6; margin-top: 1px; }
+.ob-progress-bar { height: 3px; background: rgba(255,255,255,0.15); }
+.ob-progress-fill { height: 100%; background: var(--gold); transition: width 0.4s ease; width: 0%; }
+.ob-chat { flex: 1; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.ob-msg { max-width: 86%; padding: 10px 13px; border-radius: 16px; font-size: 13px; line-height: 1.5; }
+.ob-msg.luni { background: var(--card); color: var(--text); border: 1px solid var(--border); border-bottom-left-radius: 3px; align-self: flex-start; }
+.ob-msg.luni .lbl { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-bottom: 4px; }
+.ob-msg.user { background: var(--burgundy); color: white; border-bottom-right-radius: 3px; align-self: flex-end; }
+.ob-input-area { padding: 10px 16px 20px; background: var(--bg); border-top: 1px solid var(--border); }
+.ob-text-row { display: flex; gap: 8px; align-items: center; }
+.ob-text { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 10px 15px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; }
+.ob-text::placeholder { color: var(--muted); }
+.ob-send { width: 38px; height: 38px; background: var(--burgundy); border: none; border-radius: 50%; color: white; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ob-options { display: flex; flex-wrap: wrap; gap: 7px; }
+.ob-opt { padding: 8px 14px; border-radius: 22px; font-size: 13px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); cursor: pointer; transition: all 0.12s; font-family: 'DM Sans', sans-serif; }
+.ob-opt.sel { background: var(--burgundy); color: white; border-color: var(--burgundy); }
+.ob-continue { width: 100%; margin-top: 10px; padding: 13px; background: var(--burgundy); color: white; border: none; border-radius: 13px; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; opacity: 0.4; pointer-events: none; }
+.ob-continue.ready { opacity: 1; pointer-events: all; }
+.ob-question-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 13px 14px; align-self: flex-start; width: 100%; }
+.ob-question-card .qlabel { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-bottom: 5px; }
+.ob-divider { height: 1px; background: var(--border); margin: 10px 0; }
+.ob-calendar { width: 100%; }
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cal-month { font-size: 13px; font-weight: 500; color: var(--text); }
+.cal-nav { background: none; border: none; font-size: 16px; color: var(--burgundy); cursor: pointer; padding: 2px 6px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.cal-day-label { text-align: center; font-size: 10px; color: var(--muted); font-weight: 500; padding: 2px 0; }
+.cal-day { text-align: center; font-size: 12px; padding: 5px 2px; border-radius: 6px; cursor: pointer; color: var(--text); transition: all 0.12s; }
+.cal-day:hover { background: var(--burg-soft); }
+.cal-day.empty { pointer-events: none; }
+.cal-day.today { font-weight: 600; color: var(--burgundy); }
+.cal-day.selected { background: var(--burgundy); color: white; }
+.cal-day.future { color: #DDD; pointer-events: none; }
+
+/* MAIN APP */
+#mainApp { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+#mainApp.show { display: flex; }
+.screens { flex: 1; overflow: hidden; position: relative; }
+.screen { position: absolute; inset: 0; overflow-y: auto; background: var(--bg); padding-bottom: calc(var(--nav-h) + 8px); opacity: 0; pointer-events: none; transition: opacity 0.18s; }
+.screen.active { opacity: 1; pointer-events: all; }
+.screen-header { background: var(--burgundy); padding: 16px 20px 20px; color: white; }
+.screen-header h1 { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 600; line-height: 1.2; }
+.screen-header p { font-size: 12px; opacity: 0.65; margin-top: 3px; }
+.card { background: var(--card); border-radius: 14px; padding: 14px 16px; margin: 10px 16px 0; border: 1px solid var(--border); }
+.card-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 5px; }
+.card-sub { font-size: 12px; color: var(--muted); line-height: 1.55; }
+.note-box { background: var(--card2); border-radius: 10px; padding: 9px 12px; margin: 10px 16px 0; font-size: 11px; color: var(--muted); line-height: 1.5; }
+.section-title { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 16px 4px; }
+.divider { height: 1px; background: var(--border); margin: 10px 16px 0; }
+.cta-btn { background: var(--burgundy); color: white; border: none; border-radius: 12px; padding: 12px 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; line-height: 1.3; transition: opacity 0.15s; width: 100%; }
+.cta-btn:active { opacity: 0.85; }
+
+/* HOME */
+.home-header { background: var(--burgundy); padding: 18px 20px 22px; color: white; }
+.home-greeting { font-size: 13px; opacity: 0.7; margin-bottom: 2px; }
+.home-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; }
+.cycle-bar { background: rgba(255,255,255,0.12); border-radius: 12px; padding: 11px 14px; margin-top: 14px; display: flex; justify-content: space-between; align-items: center; }
+.cycle-phase { font-size: 14px; font-weight: 500; }
+.cycle-day { font-size: 11px; opacity: 0.7; margin-top: 1px; }
+.cycle-badge { font-size: 11px; background: rgba(196,150,58,0.3); color: var(--gold); padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+.phase-track { margin-top: 10px; height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+.phase-fill { height: 100%; width: 78%; background: var(--gold); border-radius: 2px; }
+.stats-row { display: flex; gap: 8px; padding: 10px 16px 0; }
+.stat-chip { flex: 1; background: var(--card); border-radius: 12px; padding: 10px 8px; text-align: center; border: 1px solid var(--border); }
+.stat-val { font-size: 18px; font-weight: 600; color: var(--burgundy); }
+.stat-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 1px; }
+
+/* HOME LOG CARD */
+.home-log-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.home-log-row:last-child { border-bottom: none; padding-bottom: 0; }
+.home-log-left { display: flex; align-items: center; gap: 7px; min-width: 80px; }
+.home-log-icon { font-size: 16px; }
+.home-log-label { font-size: 12px; color: var(--text); font-weight: 500; }
+.home-log-opts { display: flex; gap: 5px; flex-wrap: wrap; }
+.h-opt { font-size: 11px; padding: 4px 9px; border-radius: 20px; background: var(--card2); color: var(--muted); cursor: pointer; border: 1.5px solid transparent; transition: all 0.12s; }
+.h-opt.sel { background: var(--burg-soft); color: var(--burgundy); border-color: var(--burgundy); }
+.h-opt.done { background: var(--green-bg); color: var(--green); border-color: transparent; }
+.home-log-tap { font-size: 12px; color: var(--burgundy); cursor: pointer; }
+.tap-through { cursor: pointer; }
+.tap-through:active { background: var(--burg-soft); border-radius: 8px; }
+.log-done-check { font-size: 12px; color: var(--green); margin-left: auto; }
+
+/* Luni preview */
+.luni-preview { background: var(--card); border-radius: 14px; padding: 13px 14px; margin: 10px 16px 0; border: 1px solid var(--border); display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.luni-preview:active { background: var(--burg-soft); }
+.luni-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--burgundy); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.luni-preview-label { font-size: 10px; color: var(--gold); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px; }
+.luni-preview-text { font-size: 13px; color: var(--text); line-height: 1.45; }
+.luni-preview-note { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* LOG TABS */
+.log-tabs { display: flex; background: var(--card); border-bottom: 1px solid var(--border); flex-shrink: 0; overflow-x: auto; }
+.log-tab { flex-shrink: 0; padding: 11px 14px; text-align: center; font-size: 12px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; }
+.log-tab.active { color: var(--burgundy); font-weight: 500; border-bottom-color: var(--burgundy); }
+.log-tab.hidden { display: none; }
+.log-panel { display: none; padding-bottom: 16px; }
+.log-panel.active { display: block; }
+
+/* SKIN LOG */
+.photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 16px 0; }
+.photo-slot { height: 100px; border-radius: 12px; background: var(--card2); border: 1.5px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; position: relative; overflow: hidden; }
+.photo-slot.filled { border-style: solid; border-color: var(--burgundy); }
+.photo-face { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 36px; background: linear-gradient(135deg, #F2EBE3, #E8D8CC); }
+.photo-date { position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,0.45); color: white; font-size: 10px; padding: 2px 7px; border-radius: 20px; }
+.photo-phase { position: absolute; top: 6px; right: 6px; background: var(--burgundy); color: white; font-size: 9px; padding: 2px 7px; border-radius: 20px; }
+.add-slot { font-size: 22px; opacity: 0.35; }
+.add-label { font-size: 11px; color: var(--muted); }
+.tag-group { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
+.stag { background: var(--card2); border-radius: 20px; padding: 6px 13px; font-size: 12px; color: var(--text); cursor: pointer; border: 1.5px solid transparent; transition: all 0.12s; }
+.stag.sel { background: var(--burgundy); color: white; }
+
+/* FOOD LOG */
+.food-input-row { display: flex; gap: 8px; margin: 10px 16px 0; }
+.food-voice-btn { background: var(--burgundy); color: white; border: none; border-radius: 12px; padding: 11px 14px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.food-manual-btn { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; }
+.meal-block { background: var(--card); border-radius: 12px; border: 1px solid var(--border); margin: 10px 16px 0; overflow: hidden; }
+.meal-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 13px; background: var(--card2); font-size: 13px; font-weight: 500; color: var(--text); }
+.meal-add { font-size: 20px; color: var(--burgundy); cursor: pointer; }
+.meal-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 13px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text); }
+.ftag { font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+.ftag.good { background: var(--green-bg); color: var(--green); }
+.ftag.track { background: var(--amber-bg); color: var(--amber); }
+
+/* LIFESTYLE */
+.lifestyle-grid { padding: 10px 16px 0; display: flex; flex-direction: column; gap: 8px; }
+.ls-row { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 11px 13px; display: flex; align-items: center; gap: 10px; }
+.ls-icon { font-size: 18px; flex-shrink: 0; }
+.ls-label { font-size: 13px; color: var(--text); flex: 1; }
+.ls-options { display: flex; gap: 5px; }
+.ls-opt { font-size: 11px; padding: 4px 9px; border-radius: 20px; background: var(--card2); color: var(--muted); cursor: pointer; border: 1.5px solid transparent; transition: all 0.12s; }
+.ls-opt.sel { background: var(--burg-soft); color: var(--burgundy); border-color: var(--burgundy); }
+
+/* TREATMENT */
+.treatment-block { background: var(--card); border-radius: 12px; border: 1px solid var(--border); margin: 10px 16px 0; overflow: hidden; }
+.treatment-head { padding: 11px 14px; background: var(--burg-soft); border-bottom: 1px solid var(--border); }
+.treatment-name { font-size: 14px; font-weight: 500; color: var(--burgundy); }
+.treatment-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.treatment-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid var(--border); }
+.treatment-label { font-size: 13px; color: var(--text); }
+.t-opts { display: flex; gap: 6px; }
+.t-opt { font-size: 12px; padding: 5px 11px; border-radius: 20px; background: var(--card2); color: var(--muted); cursor: pointer; border: 1.5px solid transparent; transition: all 0.12s; }
+.t-opt.sel { background: var(--burg-soft); color: var(--burgundy); border-color: var(--burgundy); }
+.treatment-note { padding: 10px 14px; font-size: 11px; color: var(--muted); line-height: 1.5; border-top: 1px solid var(--border); }
+
+/* ANALYSIS */
+.pattern-card { background: var(--card); border-radius: 14px; padding: 14px 16px; margin: 10px 16px 0; border: 1px solid var(--border); }
+.pattern-row { display: flex; gap: 11px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.pattern-row:last-child { border-bottom: none; padding-bottom: 0; }
+.pi { width: 34px; height: 34px; border-radius: 10px; background: var(--card2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.pt { flex: 1; }
+.pt-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.pt-sub { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.pt-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; align-self: flex-start; margin-top: 2px; }
+.pt-badge.confirmed { background: var(--green-bg); color: var(--green); }
+.pt-badge.emerging { background: var(--amber-bg); color: var(--amber); }
+.pt-badge.tracking { background: var(--card2); color: var(--muted); }
+.mini-chart { display: flex; align-items: flex-end; gap: 5px; height: 52px; margin-top: 10px; }
+.bc { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.bar { width: 100%; border-radius: 3px 3px 0 0; background: var(--card2); }
+.bar.hi { background: var(--burgundy); }
+.blbl { font-size: 9px; color: var(--muted); }
+
+/* SCANNER MODE SELECTOR */
+.scan-mode-screen { padding: 20px 16px 0; display: flex; flex-direction: column; gap: 12px; }
+.scan-mode-card {
+  background: var(--card); border-radius: 18px; border: 1.5px solid var(--border);
+  padding: 20px 18px; display: flex; align-items: center; gap: 16px;
+  cursor: pointer; transition: all 0.15s;
+}
+.scan-mode-card:active { background: var(--burg-soft); border-color: var(--burgundy); }
+.scan-mode-icon { font-size: 36px; flex-shrink: 0; }
+.scan-mode-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.scan-mode-sub { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.scan-mode-arrow { font-size: 20px; color: var(--muted); margin-left: auto; flex-shrink: 0; }
+/* sub-screens within scanner */
+.scan-subscreen { display: none; }
+.scan-subscreen.active { display: block; }
+/* skin capture screen */
+.skin-capture-box {
+  margin: 12px 16px 0; border-radius: 20px;
+  background: #111; overflow: hidden; position: relative;
+  height: 240px; display: flex; align-items: center; justify-content: center;
+}
+.skin-face-guide {
+  width: 120px; height: 150px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  border: 2px dashed rgba(196,150,58,0.7);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px;
+}
+.skin-capture-hint { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.55); font-size: 11px; white-space: nowrap; }
+.skin-capture-btn {
+  display: block; margin: 12px 16px 0; width: calc(100% - 32px);
+  background: var(--burgundy); color: white; border: none; border-radius: 14px;
+  padding: 14px; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+}
+.scan-back-row { display: flex; align-items: center; gap: 8px; padding: 12px 16px 0; cursor: pointer; }
+.scan-back-row span { font-size: 13px; color: var(--burgundy); }
+
+/* SCANNER */
+.scanner-screen-header { background: var(--burgundy); padding: 16px 20px 20px; color: white; }
+.scanner-screen-header h1 { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 600; }
+.scanner-screen-header p { font-size: 12px; opacity: 0.65; margin-top: 3px; }
+.scanner-context { display: flex; gap: 8px; padding: 10px 16px 0; flex-wrap: wrap; }
+.scanner-context-chip { font-size: 11px; padding: 5px 11px; border-radius: 20px; background: var(--card); border: 1px solid var(--border); color: var(--muted); }
+.scanner-context-chip.active { background: var(--burg-soft); border-color: var(--burgundy); color: var(--burgundy); font-weight: 500; }
+.scanner-viewfinder {
+  margin: 12px 16px 0; border-radius: 20px;
+  background: #111; overflow: hidden; position: relative;
+  aspect-ratio: 1.5;
+  display: flex; align-items: center; justify-content: center;
+}
+.scanner-corner { position: absolute; width: 48px; height: 48px; border: 3px solid var(--gold); }
+.scanner-corner.tl { top: 16px; left: 16px; border-right: none; border-bottom: none; border-radius: 6px 0 0 0; }
+.scanner-corner.tr { top: 16px; right: 16px; border-left: none; border-bottom: none; border-radius: 0 6px 0 0; }
+.scanner-corner.bl { bottom: 16px; left: 16px; border-right: none; border-top: none; border-radius: 0 0 0 6px; }
+.scanner-corner.br { bottom: 16px; right: 16px; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
+.scanner-beam { position: absolute; left: 16px; right: 16px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); animation: beam 2s ease-in-out infinite; }
+@keyframes beam { 0%,100%{top:20px;opacity:0} 10%,90%{opacity:1} 50%{top:calc(100% - 20px)} }
+.scanner-hint { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-size: 11px; white-space: nowrap; letter-spacing: 0.05em; }
+.scanner-search-row { display: flex; gap: 8px; padding: 10px 16px 0; }
+.scanner-search { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 10px 15px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; }
+.scanner-search::placeholder { color: var(--muted); }
+.scanner-go { background: var(--burgundy); color: white; border: none; border-radius: 22px; padding: 10px 16px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; white-space: nowrap; }
+.scanner-recent-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 14px 16px 6px; }
+.scanner-recent-row { display: flex; align-items: center; gap: 11px; padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+.scanner-recent-row:active { background: var(--burg-soft); }
+.scanner-recent-icon { font-size: 20px; flex-shrink: 0; }
+.scanner-recent-info { flex: 1; }
+.scanner-recent-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.scanner-recent-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+/* result overlay */
+.scan-result-overlay {
+  position: absolute; inset: 0; background: var(--bg);
+  z-index: 20; overflow-y: auto; padding-bottom: calc(var(--nav-h) + 8px);
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.scan-result-overlay.show { opacity: 1; pointer-events: all; }
+.scan-result-header {
+  background: var(--burgundy); padding: 14px 20px 18px; color: white;
+  display: flex; align-items: center; gap: 12px;
+}
+.scan-back { background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; }
+.scan-result-header-text h2 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; }
+.scan-result-header-text p { font-size: 11px; opacity: 0.65; margin-top: 2px; }
+.scan-verdict {
+  margin: 12px 16px 0; border-radius: 14px; padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.scan-verdict.good { background: var(--green-bg); }
+.scan-verdict.caution { background: var(--amber-bg); }
+.scan-verdict.neutral { background: var(--card2); }
+.scan-verdict-icon { font-size: 28px; flex-shrink: 0; }
+.scan-verdict-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.scan-verdict-sub { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+.scan-ingredients-card { background: var(--card); border-radius: 14px; border: 1px solid var(--border); margin: 10px 16px 0; overflow: hidden; }
+.scan-ingredients-head { padding: 10px 14px; background: var(--card2); font-size: 10px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.scan-ingr-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; border-top: 1px solid var(--border); font-size: 13px; }
+.scan-ingr-name { color: var(--text); }
+.scan-ingr-tag { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+.scan-ingr-tag.good { background: var(--green-bg); color: var(--green); }
+.scan-ingr-tag.caution { background: var(--amber-bg); color: var(--amber); }
+.scan-ingr-tag.neutral { background: var(--card2); color: var(--muted); }
+.scan-routine-match { background: var(--card); border-radius: 14px; border: 1px solid var(--border); padding: 13px 14px; margin: 10px 16px 0; }
+.scan-routine-match-label { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-bottom: 5px; }
+.scan-routine-match-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.scan-actions { display: flex; gap: 8px; padding: 12px 16px 0; }
+.scan-add-btn { flex: 1; background: var(--burgundy); color: white; border: none; border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: opacity 0.15s; }
+.scan-add-btn:active { opacity: 0.85; }
+.scan-add-btn.added { background: var(--green); }
+.scan-save-btn { background: var(--card); color: var(--burgundy); border: 1.5px solid var(--border); border-radius: 12px; padding: 13px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+.scan-disclaimer { margin: 10px 16px 0; font-size: 11px; color: var(--muted); line-height: 1.5; padding-bottom: 4px; }
+
+/* Shop availability chips */
+.shop-avail { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.shop-chip { font-size:11px; padding:4px 10px; border-radius:20px; font-weight:500; }
+.shop-chip.preferred { background:var(--green-bg); color:var(--green); }
+.shop-chip.other { background:var(--card2); color:var(--muted); }
+.shop-chip.none { background:var(--amber-bg); color:var(--amber); }
+
+/* SKIN TIMELINE */
+.skin-timeline { overflow-x: auto; display: flex; gap: 10px; padding: 12px 16px 4px; scrollbar-width: none; }
+.skin-timeline::-webkit-scrollbar { display: none; }
+.timeline-entry {
+  flex-shrink: 0; width: 100px; cursor: pointer;
+  border-radius: 14px; overflow: hidden;
+  border: 1.5px solid var(--border);
+  background: var(--card2);
+  transition: border-color 0.15s;
+  position: relative;
+}
+.timeline-entry:active { border-color: var(--burgundy); }
+.timeline-entry.active-entry { border-color: var(--burgundy); }
+.timeline-face {
+  height: 90px; display: flex; align-items: center;
+  justify-content: center; font-size: 38px;
+  background: linear-gradient(135deg, #F2EBE3, #E8D8CC);
+}
+.timeline-meta { padding: 6px 8px 7px; }
+.timeline-date { font-size: 11px; font-weight: 500; color: var(--text); }
+.timeline-phase {
+  font-size: 10px; color: white; background: var(--burgundy);
+  border-radius: 20px; padding: 1px 7px; display: inline-block; margin-top: 3px;
+}
+.timeline-detail {
+  background: var(--card); border-radius: 14px; border: 1px solid var(--border);
+  margin: 0 16px; padding: 13px 14px; display: none;
+}
+.timeline-detail.show { display: block; }
+.timeline-detail-date { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+.timeline-detail-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text); }
+.timeline-detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+.timeline-detail-label { color: var(--muted); min-width: 54px; }
+.timeline-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.timeline-tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--card2); color: var(--text); }
+
+/* CYCLE LOG */
+.cycle-log-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.cycle-log-label { font-size:13px; color:var(--text); }
+
+/* ADD PRODUCT MODAL */
+.modal-overlay {
+  position:absolute; inset:0; background:rgba(0,0,0,0.4);
+  z-index:100; display:flex; align-items:flex-end;
+  opacity:0; pointer-events:none; transition:opacity 0.2s;
+}
+.modal-overlay.show { opacity:1; pointer-events:all; }
+.modal-sheet {
+  background:var(--bg); border-radius:20px 20px 0 0;
+  width:100%; max-height:88vh; display:flex; flex-direction:column;
+  transform:translateY(100%); transition:transform 0.3s ease;
+  overflow:hidden;
+}
+.modal-overlay.show .modal-sheet { transform:translateY(0); }
+.modal-handle { width:36px; height:4px; background:var(--border); border-radius:2px; margin:10px auto 0; flex-shrink:0; }
+.modal-header { display:flex; justify-content:space-between; align-items:center; padding:12px 16px 10px; flex-shrink:0; }
+.modal-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--text); }
+.modal-close { background:none; border:none; font-size:22px; color:var(--muted); cursor:pointer; line-height:1; padding:4px; }
+.modal-search { margin:0 16px 10px; display:flex; align-items:center; gap:8px; background:var(--card); border:1.5px solid var(--border); border-radius:12px; padding:10px 14px; flex-shrink:0; }
+.modal-search input { flex:1; border:none; background:none; font-size:13px; font-family:'DM Sans',sans-serif; color:var(--text); outline:none; }
+.modal-search input::placeholder { color:var(--muted); }
+.modal-filters { display:flex; gap:7px; padding:0 16px 10px; overflow-x:auto; flex-shrink:0; scrollbar-width:none; }
+.modal-filters::-webkit-scrollbar { display:none; }
+.filter-chip { flex-shrink:0; padding:6px 13px; border-radius:20px; font-size:12px; border:1.5px solid var(--border); background:var(--card); color:var(--text); cursor:pointer; white-space:nowrap; transition:all 0.12s; font-family:'DM Sans',sans-serif; }
+.filter-chip.sel { background:var(--text); color:white; border-color:var(--text); }
+.modal-list { flex:1; overflow-y:auto; padding:0 16px 20px; }
+.modal-product { border-bottom:1px solid var(--border); padding:12px 0; }
+.modal-product:last-child { border-bottom:none; }
+.modal-product-row { display:flex; align-items:flex-start; gap:10px; cursor:pointer; }
+.modal-product-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
+.modal-product-info { flex:1; }
+.modal-product-name { font-size:13px; font-weight:600; color:var(--text); }
+.modal-product-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+.modal-product-tags { display:flex; gap:6px; margin-top:5px; flex-wrap:wrap; }
+.modal-safe-tag { font-size:11px; padding:2px 9px; border-radius:20px; }
+.modal-safe-tag.good { background:var(--green-bg); color:var(--green); }
+.modal-safe-tag.caution { background:var(--amber-bg); color:var(--amber); }
+.modal-match-badge { font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; flex-shrink:0; white-space:nowrap; margin-top:2px; }
+.modal-match-badge.great { background:var(--green-bg); color:var(--green); }
+.modal-match-badge.ok { background:#E3F2FD; color:#1565C0; }
+.modal-match-badge.care { background:var(--amber-bg); color:var(--amber); }
+.modal-match-badge.check { background:#FCE4EC; color:#C62828; }
+.modal-product-detail { display:none; margin-top:10px; background:var(--card); border-radius:12px; padding:12px; border:1px solid var(--border); }
+.modal-product.expanded .modal-product-detail { display:block; }
+.modal-detail-section { margin-bottom:10px; }
+.modal-detail-label { font-size:10px; color:var(--gold); text-transform:uppercase; letter-spacing:0.08em; font-weight:500; margin-bottom:4px; }
+.modal-detail-text { font-size:12px; color:var(--text); line-height:1.5; }
+.modal-detail-text.ok { color:var(--green); }
+.modal-where-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+.modal-where-chip { font-size:11px; padding:4px 11px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--text); cursor:pointer; }
+.modal-sample-chip { font-size:11px; padding:4px 11px; border-radius:20px; background:#E8F5E9; color:var(--green); border:1px solid #C8E6C9; }
+.modal-add-btn { width:100%; margin-top:10px; padding:12px; background:var(--text); color:white; border:none; border-radius:12px; font-size:13px; font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; transition:opacity 0.15s; }
+.modal-add-btn.added { background:var(--green); }
+
+/* ROUTINE */
+.routine-tabs { display: flex; background: var(--card); border-bottom: 1px solid var(--border); }
+.routine-tab { flex: 1; padding: 11px; text-align: center; font-size: 13px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+.routine-tab.active { color: var(--burgundy); font-weight: 500; border-bottom-color: var(--burgundy); }
+.routine-panel { display: none; padding-bottom: 16px; }
+.routine-panel.active { display: block; }
+/* shelf */
+.shelf-intro { font-size: 12px; color: var(--muted); line-height: 1.55; padding: 10px 16px 0; }
+.scan-row { display: flex; gap: 8px; padding: 10px 16px 0; }
+.scan-btn { background: var(--burgundy); color: white; border: none; border-radius: 12px; padding: 11px 16px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.search-btn { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; text-align: left; }
+.shelf-product {
+  background: var(--card); border-radius: 14px; border: 1px solid var(--border);
+  margin: 10px 16px 0; overflow: hidden; cursor: pointer; transition: background 0.12s;
+}
+.shelf-product:active { background: var(--burg-soft); }
+.shelf-product-head { display: flex; align-items: center; gap: 11px; padding: 12px 14px; }
+.shelf-product-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--card2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.shelf-product-info { flex: 1; }
+.shelf-product-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.shelf-product-type { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.shelf-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 500; flex-shrink: 0; }
+.shelf-badge.good { background: var(--green-bg); color: var(--green); }
+.shelf-badge.note { background: var(--amber-bg); color: var(--amber); }
+.shelf-badge.neutral { background: var(--card2); color: var(--muted); }
+/* AM/PM selector on shelf product */
+.ampm-row { display: flex; align-items: center; gap: 6px; padding: 0 14px 10px; }
+.ampm-label { font-size: 11px; color: var(--muted); margin-right: 2px; }
+.ampm-opt { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: var(--card2); color: var(--muted); cursor: pointer; border: 1.5px solid transparent; transition: all 0.12s; font-family: 'DM Sans', sans-serif; }
+.ampm-opt.sel { background: var(--burgundy); color: white; border-color: var(--burgundy); }
+.shelf-product-ingredients { border-top: 1px solid var(--border); padding: 10px 14px; display: none; }
+.shelf-product.expanded .shelf-product-ingredients { display: block; }
+.ingr-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.ingr-row:last-child { border-bottom: none; }
+.ingr-name { color: var(--text); }
+.ingr-tag { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 500; }
+.ingr-tag.good { background: var(--green-bg); color: var(--green); }
+.ingr-tag.caution { background: var(--amber-bg); color: var(--amber); }
+.ingr-tag.neutral { background: var(--card2); color: var(--muted); }
+/* log panel */
+.product-log-row { display: flex; align-items: center; gap: 11px; padding: 11px 16px; background: var(--card); border-bottom: 1px solid var(--border); }
+.product-log-icon { font-size: 20px; flex-shrink: 0; }
+.product-log-info { flex: 1; }
+.product-log-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.product-log-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.active-toggle { font-size: 11px; padding: 5px 10px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--card2); color: var(--muted); cursor: pointer; transition: all 0.12s; white-space: nowrap; }
+.active-toggle.on { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+.product-log-block { background: var(--card); border-radius: 14px; border: 1px solid var(--border); margin: 10px 16px 0; overflow: hidden; }
+.product-log-head { padding: 10px 14px; background: var(--card2); font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* LUNI */
+.luni-header { background: var(--burgundy); padding: 16px 20px 18px; color: white; display: flex; align-items: center; gap: 12px; }
+.luni-header-avatar { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.luni-header-text h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; }
+.luni-header-text p { font-size: 11px; opacity: 0.65; margin-top: 1px; }
+.chat-area { padding: 12px 16px 0; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 84%; padding: 10px 13px; border-radius: 16px; font-size: 13px; line-height: 1.5; }
+.msg.luni { background: var(--card); color: var(--text); border-bottom-left-radius: 3px; border: 1px solid var(--border); align-self: flex-start; }
+.msg.luni .lbl { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-bottom: 4px; }
+.msg.user { background: var(--burgundy); color: white; border-bottom-right-radius: 3px; align-self: flex-end; }
+.msg-note { font-size: 10px; color: var(--muted); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); line-height: 1.4; }
+.quick-chips { padding: 8px 16px 0; display: flex; gap: 7px; flex-wrap: wrap; }
+.chip { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--text); cursor: pointer; white-space: nowrap; }
+.chip:active { background: var(--burg-soft); border-color: var(--burgundy); color: var(--burgundy); }
+.chat-input-row { margin: 12px 16px 0; display: flex; gap: 8px; align-items: center; }
+.chat-input { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 10px 15px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; }
+.chat-input::placeholder { color: var(--muted); }
+.send-btn { width: 38px; height: 38px; background: var(--burgundy); border: none; border-radius: 50%; color: white; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* PROFILE */
+.profile-header { background: var(--burgundy); padding: 20px 20px 24px; color: white; text-align: center; }
+.profile-avatar { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 10px; }
+.profile-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; }
+.profile-since { font-size: 11px; opacity: 0.65; margin-top: 2px; }
+.profile-stats { display: flex; background: rgba(255,255,255,0.1); border-radius: 12px; margin-top: 14px; overflow: hidden; }
+.pstat { flex: 1; padding: 10px 8px; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); }
+.pstat:last-child { border-right: none; }
+.pstat-val { font-size: 18px; font-weight: 600; }
+.pstat-lbl { font-size: 10px; opacity: 0.65; margin-top: 1px; }
+.menu-block { background: var(--card); border-radius: 14px; margin: 0 16px; overflow: hidden; border: 1px solid var(--border); }
+.menu-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+.menu-row:last-child { border-bottom: none; }
+.menu-row:active { background: var(--burg-soft); }
+.menu-icon { font-size: 18px; flex-shrink: 0; }
+.menu-label { font-size: 14px; color: var(--text); flex: 1; }
+.menu-arrow { color: var(--muted); font-size: 16px; }
+.apps-row { display: flex; gap: 8px; padding: 10px 16px 0; flex-wrap: wrap; }
+.app-chip { display: flex; align-items: center; gap: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 11px; font-size: 12px; color: var(--text); }
+.app-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+.app-chip .dot.grey { background: var(--muted); }
+
+/* NAV */
+.bottom-nav { height: var(--nav-h); background: white; border-top: 1px solid var(--border); display: flex; align-items: center; flex-shrink: 0; z-index: 10; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; cursor: pointer; border-radius: 10px; transition: background 0.12s; }
+.nav-item:active { background: var(--burg-soft); }
+.nav-icon { font-size: 19px; line-height: 1; }
+.nav-label { font-size: 10px; color: var(--muted); }
+.nav-item.active .nav-label { color: var(--burgundy); font-weight: 500; }
+.nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--burgundy); margin-top: -1px; opacity: 0; }
+.nav-item.active .nav-dot { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+  <!-- ONBOARDING -->
+  <div id="onboarding">
+    <div class="ob-luni-bar">
+      <div class="ob-avatar">🌙</div>
+      <div><div class="ob-title">Luni</div><div class="ob-sub">Setting up your profile</div></div>
+    </div>
+    <div class="ob-progress-bar"><div class="ob-progress-fill" id="obProgress"></div></div>
+    <div class="ob-chat" id="obChat"></div>
+    <div class="ob-input-area" id="obInputArea"></div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="mainApp">
+    <div class="screens">
+
+      <!-- HOME -->
+      <div class="screen active" id="screen-home">
+        <div class="home-header">
+          <div class="home-greeting">Good morning ☀️</div>
+          <div class="home-name" id="homeNameDisplay">Jasmin</div>
+          <div class="cycle-bar">
+            <div>
+              <div class="cycle-phase" id="homeCyclePhase">🌙 Luteal Phase</div>
+              <div class="cycle-day" id="homeCycleDay">Day 22 of 28</div>
+            </div>
+            <div class="cycle-badge" id="homeCycleBadge">Day 22</div>
+          </div>
+          <div class="phase-track"><div class="phase-fill" id="homePhaseFill"></div></div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-chip"><div class="stat-val" id="statDays">1</div><div class="stat-lbl">Days logged</div></div>
+          <div class="stat-chip"><div class="stat-val" id="statCycles">1</div><div class="stat-lbl">Cycles</div></div>
+          <div class="stat-chip"><div class="stat-val">🔥 1</div><div class="stat-lbl">Streak</div></div>
+        </div>
+
+        <!-- INLINE DAILY LOG CARD -->
+        <div class="card" style="margin-top:10px;">
+          <div class="card-label" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Today's log</span>
+            <span id="logProgressLabel" style="color:var(--muted);font-size:10px;">0 of 5 done</span>
+          </div>
+
+          <div class="home-log-row" id="hlSleep">
+            <div class="home-log-left"><span class="home-log-icon">😴</span><span class="home-log-label">Sleep</span></div>
+            <div class="home-log-opts">
+              <span class="h-opt" onclick="homeLog(this,'sleep')">Under 6h</span>
+              <span class="h-opt" onclick="homeLog(this,'sleep')">6–8h</span>
+              <span class="h-opt" onclick="homeLog(this,'sleep')">8h+</span>
+            </div>
+          </div>
+
+          <div class="home-log-row" id="hlStress">
+            <div class="home-log-left"><span class="home-log-icon">😤</span><span class="home-log-label">Stress</span></div>
+            <div class="home-log-opts">
+              <span class="h-opt" onclick="homeLog(this,'stress')">Low</span>
+              <span class="h-opt" onclick="homeLog(this,'stress')">Medium</span>
+              <span class="h-opt" onclick="homeLog(this,'stress')">High</span>
+            </div>
+          </div>
+
+          <!-- Skin → goes to Scan screen → skin photo (single skin flow) -->
+          <div class="home-log-row tap-through" onclick="switchTab('scan', document.querySelector('[data-screen=scan]'));showScanMode('skin')">
+            <div class="home-log-left"><span class="home-log-icon">🤳</span><span class="home-log-label">Skin</span></div>
+            <div class="home-log-tap" id="hlSkinStatus">Tap to log →</div>
+          </div>
+
+          <!-- Food → goes to Log > Food tab -->
+          <div class="home-log-row tap-through" onclick="goLog('food')">
+            <div class="home-log-left"><span class="home-log-icon">🍎</span><span class="home-log-label">Food</span></div>
+            <div class="home-log-tap" id="hlFoodStatus">Tap to log →</div>
+          </div>
+
+          <!-- Cycle → goes to Log > Cycle tab -->
+          <div class="home-log-row tap-through" onclick="goLog('cycle')">
+            <div class="home-log-left"><span class="home-log-icon">🌙</span><span class="home-log-label">Cycle</span></div>
+            <div class="home-log-tap" id="hlCycleStatus">Tap to log →</div>
+          </div>
+
+          <div class="home-log-row" id="hlTreatment" style="display:none;">
+            <div class="home-log-left"><span class="home-log-icon">💊</span><span class="home-log-label" id="hlTreatmentLabel">Treatment</span></div>
+            <div class="home-log-opts">
+              <span class="h-opt" onclick="homeLog(this,'treatment')">Taken ✓</span>
+              <span class="h-opt" onclick="homeLog(this,'treatment')">Skipped</span>
+            </div>
+          </div>
+
+          <div style="padding:10px 0 2px;text-align:right;">
+            <span onclick="goLog('skin')" style="font-size:12px;color:var(--burgundy);cursor:pointer;font-weight:500;">View full log →</span>
+          </div>
+        </div>
+
+        <div class="luni-preview" onclick="switchTab('luni', document.querySelector('[data-screen=luni]'))">
+          <div class="luni-avatar">🌙</div>
+          <div>
+            <div class="luni-preview-label">Luni · just now</div>
+            <div class="luni-preview-text" id="luniPreviewText">Log consistently and I'll start finding connections between your cycle, sleep, diet and skin.</div>
+            <div class="luni-preview-note">Tap to ask Luni anything →</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOG -->
+      <div class="screen" id="screen-log">
+        <div class="screen-header"><h1>Daily Log</h1><p>Skin · Cycle · Food · Lifestyle · Analysis</p></div>
+        <div class="log-tabs">
+          <div class="log-tab active" onclick="switchLogTab('skin',this)">Skin</div>
+          <div class="log-tab" onclick="switchLogTab('cycle',this)">Cycle</div>
+          <div class="log-tab" onclick="switchLogTab('food',this)">Food</div>
+          <div class="log-tab" onclick="switchLogTab('lifestyle',this)">Lifestyle</div>
+          <div class="log-tab hidden" id="treatmentTab" onclick="switchLogTab('treatment',this)">Treatment</div>
+          <div class="log-tab" onclick="switchLogTab('analysis',this)">Analysis</div>
+        </div>
+
+        <!-- SKIN — scrollable timeline history. Camera/logging lives in Scan > Skin photo -->
+        <div class="log-panel active" id="log-skin">
+          <div class="note-box" style="margin:10px 16px 4px;">Your skin photo history — each entry mapped to your cycle phase. Tap any photo to see what was logged that day.</div>
+          <div style="padding:8px 16px 0;">
+            <button class="cta-btn" onclick="switchTab('scan', document.querySelector('[data-screen=scan]'));showScanMode('skin')">📷 Log today's skin →</button>
+          </div>
+
+          <!-- Month selector -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 4px;">
+            <span style="font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">May 2026</span>
+            <div style="display:flex;gap:4px;">
+              <button onclick="shiftMonth(-1)" style="background:none;border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:13px;color:var(--burgundy);cursor:pointer;">‹</button>
+              <button onclick="shiftMonth(1)" style="background:none;border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:13px;color:var(--burgundy);cursor:pointer;">›</button>
+            </div>
+          </div>
+
+          <!-- Scrollable photo timeline -->
+          <div class="skin-timeline" id="skinTimeline"></div>
+
+          <!-- Detail panel — shown on tap -->
+          <div class="timeline-detail" id="timelineDetail"></div>
+
+          <!-- Phase comparison hint -->
+          <div class="note-box" style="margin-top:10px;">
+            Scroll through your history to see how your skin changes across cycle phases. After 2+ cycles, the Analysis tab will show you the full pattern.
+          </div>
+        </div>
+
+        <!-- CYCLE -->
+        <div class="log-panel" id="log-cycle">
+          <div class="note-box" style="margin:10px 16px 0;">Log your cycle regularly so Luni can keep your phase accurate. The more cycles you track, the more reliable your patterns become.</div>
+
+          <div class="card" style="margin-top:10px;">
+            <div class="card-label">Period</div>
+            <div class="cycle-log-row">
+              <span class="cycle-log-label">Did your period start today?</span>
+              <div class="ls-options">
+                <span class="ls-opt" onclick="selOpt(this);document.getElementById('periodStartDetail').style.display='block'">Yes</span>
+                <span class="ls-opt sel" onclick="selOpt(this);document.getElementById('periodStartDetail').style.display='none'">No</span>
+              </div>
+            </div>
+            <div id="periodStartDetail" style="display:none;margin-top:12px;">
+              <div class="card-label" style="margin-bottom:6px;">Confirm start date</div>
+              <div id="cycleCal" style="padding:4px 0;"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Flow today</div>
+            <div class="ls-options" style="flex-wrap:wrap;gap:7px;margin-top:4px;">
+              <span class="ls-opt" onclick="selOpt(this)">No period</span>
+              <span class="ls-opt" onclick="selOpt(this)">Spotting</span>
+              <span class="ls-opt" onclick="selOpt(this)">Light</span>
+              <span class="ls-opt sel" onclick="selOpt(this)">Medium</span>
+              <span class="ls-opt" onclick="selOpt(this)">Heavy</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Any symptoms today?</div>
+            <div class="tag-group" style="margin-top:4px;">
+              <span class="stag" onclick="this.classList.toggle('sel')">Cramps</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Bloating</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Headache</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Fatigue</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Mood changes</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Breast tenderness</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">None</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Current cycle phase</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+              <div style="font-size:22px;" id="cyclePhaseEmoji">🌙</div>
+              <div>
+                <div style="font-size:14px;font-weight:500;color:var(--text);" id="cyclePhaseLabel">Luteal phase</div>
+                <div style="font-size:11px;color:var(--muted);" id="cyclePhaseDay">Day 22 of 28 · estimated from your last period</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:12px 16px 0;"><button class="cta-btn" onclick="markCycleLogged()">Save cycle log →</button></div>
+        </div>
+
+        <!-- FOOD -->
+        <div class="log-panel" id="log-food">
+          <div class="food-input-row">
+            <button class="food-voice-btn" onclick="alert('Voice logging coming soon — you\'ll say \'oats for breakfast, salmon for lunch\' and Luni will parse it automatically.')">🎙️ Voice log <span style="font-size:10px;opacity:0.7;">· soon</span></button>
+            <button class="food-manual-btn" onclick="alert('In the real app, type your meal here.')">+ Manual entry</button>
+          </div>
+          <div class="note-box" style="margin-top:10px;">Research links high-GI foods and dairy with acne. Omega-3 rich foods may reduce inflammation. Log consistently — personal patterns take weeks to emerge.</div>
+          <div class="meal-block">
+            <div class="meal-head"><span>☀️ Breakfast</span><span class="meal-add" onclick="alert('Tap to add a food item.')">+</span></div>
+            <div class="meal-row"><span>Oats with berries</span><span class="ftag good">Low GI ✓</span></div>
+            <div class="meal-row"><span>Coffee with milk</span><span class="ftag track">Dairy · log it</span></div>
+          </div>
+          <div class="meal-block">
+            <div class="meal-head"><span>🌤 Lunch</span><span class="meal-add" onclick="alert('Tap to add a food item.')">+</span></div>
+            <div class="meal-row"><span>Salmon with greens</span><span class="ftag good">Omega-3 ✓</span></div>
+            <div class="meal-row"><span>Olive oil dressing</span><span class="ftag good">Anti-inflammatory</span></div>
+          </div>
+          <div class="meal-block">
+            <div class="meal-head"><span>🌙 Dinner</span><span class="meal-add" onclick="alert('Tap to add a food item.')">+</span></div>
+            <div class="meal-row" style="color:var(--muted);justify-content:center;padding:13px;">Tap + to log dinner</div>
+          </div>
+          <div style="padding:12px 16px 0;"><button class="cta-btn" onclick="markFoodLogged()">Save food log →</button></div>
+        </div>
+
+        <!-- LIFESTYLE -->
+        <div class="log-panel" id="log-lifestyle">
+          <div class="note-box" style="margin:10px 16px 0;">Sleep and stress have a well-researched relationship with acne. Luni looks for patterns across weeks, not single days.</div>
+          <div class="lifestyle-grid">
+            <div class="ls-row"><span class="ls-icon">😴</span><span class="ls-label">Sleep</span><div class="ls-options"><span class="ls-opt" onclick="selOpt(this)">Under 6h</span><span class="ls-opt sel" onclick="selOpt(this)">6–8h</span><span class="ls-opt" onclick="selOpt(this)">8h+</span></div></div>
+            <div class="ls-row"><span class="ls-icon">😤</span><span class="ls-label">Stress</span><div class="ls-options"><span class="ls-opt sel" onclick="selOpt(this)">Low</span><span class="ls-opt" onclick="selOpt(this)">Medium</span><span class="ls-opt" onclick="selOpt(this)">High</span></div></div>
+            <div class="ls-row"><span class="ls-icon">🏃</span><span class="ls-label">Exercise</span><div class="ls-options"><span class="ls-opt" onclick="selOpt(this)">None</span><span class="ls-opt sel" onclick="selOpt(this)">Light</span><span class="ls-opt" onclick="selOpt(this)">Intense</span></div></div>
+            <div class="ls-row"><span class="ls-icon">💧</span><span class="ls-label">Water</span><div class="ls-options"><span class="ls-opt" onclick="selOpt(this)">Low</span><span class="ls-opt sel" onclick="selOpt(this)">Medium</span><span class="ls-opt" onclick="selOpt(this)">High</span></div></div>
+            <div class="ls-row"><span class="ls-icon">💊</span><span class="ls-label">Supplements</span><div class="ls-options"><span class="ls-opt sel" onclick="selOpt(this)">Taken</span><span class="ls-opt" onclick="selOpt(this)">Skipped</span></div></div>
+          </div>
+          <div style="padding:12px 16px 0;"><button class="cta-btn">Save lifestyle log →</button></div>
+        </div>
+
+        <!-- TREATMENT -->
+        <div class="log-panel" id="log-treatment">
+          <div class="treatment-block">
+            <div class="treatment-head">
+              <div class="treatment-name" id="treatmentName">Tretinoin 0.025%</div>
+              <div class="treatment-meta">Started <span id="treatmentStartDisplay">—</span> · Day <span id="treatmentDayNum">1</span> of treatment</div>
+            </div>
+            <div class="treatment-row">
+              <span class="treatment-label">Applied tonight?</span>
+              <div class="t-opts"><span class="t-opt" onclick="selTOpt(this)">Applied ✓</span><span class="t-opt" onclick="selTOpt(this)">Skipped</span></div>
+            </div>
+            <div class="treatment-row">
+              <span class="treatment-label">Side effects today?</span>
+              <div class="t-opts"><span class="t-opt" onclick="selTOpt(this)">None</span><span class="t-opt" onclick="selTOpt(this)">Dryness</span><span class="t-opt" onclick="selTOpt(this)">Redness</span><span class="t-opt" onclick="selTOpt(this)">Purging</span></div>
+            </div>
+            <div class="treatment-note">ℹ️ Luni tracks your skin response alongside your treatment timeline. This is for your own reference and to share with your dermatologist. Luni does not advise on adjusting or stopping medication.</div>
+          </div>
+          <div class="note-box">Your treatment log appears in your doctor report, showing how your skin responded over time.</div>
+          <div style="padding:12px 16px 0;"><button class="cta-btn">Save treatment log →</button></div>
+        </div>
+
+        <!-- ANALYSIS -->
+        <div class="log-panel" id="log-analysis">
+          <div class="card" style="margin-top:10px;">
+            <div class="card-label">Skin log entries · last 30 days</div>
+            <div class="mini-chart">
+              <div class="bc"><div class="bar" style="height:34px;"></div><div class="blbl">W1</div></div>
+              <div class="bc"><div class="bar" style="height:46px;"></div><div class="blbl">W2</div></div>
+              <div class="bc"><div class="bar hi" style="height:26px;"></div><div class="blbl">W3</div></div>
+              <div class="bc"><div class="bar" style="height:40px;"></div><div class="blbl">W4</div></div>
+              <div class="bc"><div class="bar hi" style="height:20px;"></div><div class="blbl">Now</div></div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-top:5px;">Darker = weeks with more logged breakouts</div>
+          </div>
+          <div class="pattern-card">
+            <div class="card-label" style="margin-bottom:8px;">Patterns Luni is watching</div>
+            <div class="pattern-row">
+              <div class="pi">🌙</div>
+              <div class="pt"><div class="pt-title">Luteal phase → chin & jaw breakouts</div><div class="pt-sub">Seen across all 3 logged cycles. Research: ~63% of adult women experience more acne lesions in the late luteal phase.</div></div>
+              <div class="pt-badge confirmed">Confirmed</div>
+            </div>
+            <div class="pattern-row">
+              <div class="pi">😴</div>
+              <div class="pt"><div class="pt-title">Poor sleep weeks → more breakouts logged</div><div class="pt-sub">Emerging over 2 cycles. Sleep–acne is a well-studied bidirectional relationship. Keep logging to confirm.</div></div>
+              <div class="pt-badge emerging">Emerging</div>
+            </div>
+            <div class="pattern-row">
+              <div class="pi">🍬</div>
+              <div class="pt"><div class="pt-title">High-sugar weeks → skin changes</div><div class="pt-sub">Still tracking. High-GI diets are linked to acne in multiple RCTs — personal patterns take 6–8 weeks of logging to surface.</div></div>
+              <div class="pt-badge tracking">Tracking</div>
+            </div>
+            <div class="pattern-row">
+              <div class="pi">🥑</div>
+              <div class="pt"><div class="pt-title">Omega-3 rich weeks → skin changes</div><div class="pt-sub">Still tracking. Clinical studies show omega-3s can reduce acne inflammation over weeks of consistent intake.</div></div>
+              <div class="pt-badge tracking">Tracking</div>
+            </div>
+            <div class="pattern-row">
+              <div class="pi">🧴</div>
+              <div class="pt"><div class="pt-title">New serum introduced week 3 → skin dip same week</div><div class="pt-sub">Still tracking. Luni noticed a new product appeared when your skin worsened. Needs more data to confirm if related.</div></div>
+              <div class="pt-badge tracking">Tracking</div>
+            </div>
+          </div>
+          <div class="note-box">ℹ️ "Confirmed" means this pattern appeared consistently across 3+ cycles. It is not a diagnosis — bring these patterns to your dermatologist.</div>
+        </div>
+      </div>
+
+      <!-- SCANNER — mode selector + two sub-screens -->
+      <div class="screen" id="screen-scan">
+
+        <!-- MODE SELECTOR (default) -->
+        <div class="scan-subscreen active" id="scan-mode">
+          <div class="screen-header">
+            <h1>Scan</h1>
+            <p>Track your skin or check a product</p>
+          </div>
+          <div class="scan-mode-screen">
+            <div class="scan-mode-card" onclick="showScanMode('skin')">
+              <span class="scan-mode-icon">🤳</span>
+              <div>
+                <div class="scan-mode-title">Scan my skin</div>
+                <div class="scan-mode-sub">Take today's skin photo — mapped to your cycle and tracked over time</div>
+              </div>
+              <span class="scan-mode-arrow">›</span>
+            </div>
+            <div class="scan-mode-card" onclick="showScanMode('product')">
+              <span class="scan-mode-icon">🧴</span>
+              <div>
+                <div class="scan-mode-title">Scan a product</div>
+                <div class="scan-mode-sub">Check if it's right for acne-prone skin — in store or at home</div>
+              </div>
+              <span class="scan-mode-arrow">›</span>
+            </div>
+          </div>
+          <div class="note-box" style="margin-top:14px;">Scanning a product in dm or Rossmann? Choose "Scan a product" and point your camera at the barcode for an instant assessment.</div>
+        </div>
+
+        <!-- SKIN CAPTURE SUB-SCREEN -->
+        <div class="scan-subscreen" id="scan-skin">
+          <div class="screen-header">
+            <h1>Skin photo</h1>
+            <p>Today's log · <span id="skinCapPhase">Luteal phase</span></p>
+          </div>
+          <div class="scan-back-row" onclick="switchTab('home', document.querySelector('[data-screen=home]'))">
+            <span>‹ Back</span>
+          </div>
+          <div class="skin-capture-box">
+            <div class="skin-face-guide">😐</div>
+            <div class="skin-capture-hint">Position your face in the oval · good lighting, no makeup</div>
+          </div>
+          <button class="skin-capture-btn" onclick="captureSkin()">📷 Take photo</button>
+          <div class="card" style="margin-top:10px;">
+            <div class="card-label">Any spots today?</div>
+            <div class="tag-group">
+              <span class="stag" onclick="this.classList.toggle('sel')">Jawline</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Chin</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Forehead</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Cheeks</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">None ✓</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-label">How does your skin feel?</div>
+            <div class="tag-group">
+              <span class="stag" onclick="this.classList.toggle('sel')">Clear</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Oily</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Dry</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Sensitive</span>
+              <span class="stag" onclick="this.classList.toggle('sel')">Inflamed</span>
+            </div>
+          </div>
+          <div style="padding:12px 16px 0;">
+            <button class="cta-btn" onclick="saveSkinLog()">Save skin log →</button>
+          </div>
+        </div>
+
+        <!-- PRODUCT SCANNER SUB-SCREEN -->
+        <div class="scan-subscreen" id="scan-product">
+          <div class="screen-header">
+            <h1>Scan a product</h1>
+            <p>Check if it's right for acne-prone skin</p>
+          </div>
+          <div class="scan-back-row" onclick="showScanMode('menu')">
+            <span>‹ Back</span>
+          </div>
+
+          <div class="scanner-context">
+            <span class="scanner-context-chip active">🛒 Shopping in store</span>
+            <span class="scanner-context-chip">📦 Have it at home</span>
+          </div>
+
+          <div class="scanner-viewfinder">
+            <div class="scanner-corner tl"></div>
+            <div class="scanner-corner tr"></div>
+            <div class="scanner-corner bl"></div>
+            <div class="scanner-corner br"></div>
+            <div class="scanner-beam"></div>
+            <div class="scanner-hint">Point at a product barcode</div>
+          </div>
+
+          <div class="scanner-search-row">
+            <input class="scanner-search" placeholder="Search by product name…">
+            <button class="scanner-go" onclick="showScanResult('demo')">Try demo scan</button>
+          </div>
+
+          <div class="scanner-recent-label">Recent scans</div>
+          <div style="background:var(--card);border-radius:14px;margin:0 16px;border:1px solid var(--border);overflow:hidden;">
+            <div class="scanner-recent-row" onclick="showScanResult('effaclar')">
+              <span class="scanner-recent-icon">🧴</span>
+              <div class="scanner-recent-info">
+                <div class="scanner-recent-name">La Roche-Posay Effaclar</div>
+                <div class="scanner-recent-sub">Scanned today · ✅ Acne-appropriate</div>
+              </div>
+            </div>
+            <div class="scanner-recent-row" onclick="showScanResult('nivea')">
+              <span class="scanner-recent-icon">💛</span>
+              <div class="scanner-recent-info">
+                <div class="scanner-recent-name">Nivea Soft Moisturiser</div>
+                <div class="scanner-recent-sub">Scanned yesterday · ⚠️ Worth checking</div>
+              </div>
+            </div>
+            <div class="scanner-recent-row" onclick="showScanResult('balea')">
+              <span class="scanner-recent-icon">🌿</span>
+              <div class="scanner-recent-info">
+                <div class="scanner-recent-name">Balea Med Ultra Sensitive</div>
+                <div class="scanner-recent-sub">Scanned 2 days ago · ✅ Acne-appropriate</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- result overlay -->
+          <div class="scan-result-overlay" id="scanResult">
+            <div class="scan-result-header">
+              <button class="scan-back" onclick="closeScanResult()">‹</button>
+              <div class="scan-result-header-text">
+                <h2 id="scanProductName">Product Name</h2>
+                <p id="scanProductBrand">Brand</p>
+              </div>
+            </div>
+            <div class="scan-verdict" id="scanVerdict">
+              <div class="scan-verdict-icon" id="scanVerdictIcon">✅</div>
+              <div>
+                <div class="scan-verdict-title" id="scanVerdictTitle">Good for acne-prone skin</div>
+                <div class="scan-verdict-sub" id="scanVerdictSub"></div>
+              </div>
+            </div>
+            <div class="scan-ingredients-card">
+              <div class="scan-ingredients-head">Ingredient breakdown</div>
+              <div id="scanIngredients"></div>
+            </div>
+            <div class="scan-routine-match" id="scanRoutineMatch"></div>
+            <!-- AM/PM picker on result -->
+            <div class="card" id="scanAmPmCard" style="margin-top:10px;display:none;">
+              <div class="card-label">When would you use this?</div>
+              <div style="display:flex;gap:8px;margin-top:6px;">
+                <span class="ampm-opt" onclick="selectAmPmResult(this,'AM')">☀️ Morning</span>
+                <span class="ampm-opt" onclick="selectAmPmResult(this,'PM')">🌙 Evening</span>
+                <span class="ampm-opt" onclick="selectAmPmResult(this,'Both')">Both</span>
+              </div>
+            </div>
+            <div class="scan-actions">
+              <button class="scan-add-btn" id="scanAddBtn" onclick="addToShelf()">+ Add to my shelf</button>
+              <button class="scan-save-btn" onclick="closeScanResult()">Close</button>
+            </div>
+            <div class="scan-disclaimer">ℹ️ Assessment based on comedogenic ratings and published acne research. Individual skin response varies. Consult your dermatologist for personalised advice.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ROUTINE -->
+      <div class="screen" id="screen-routine">
+        <div class="screen-header"><h1>Routine</h1><p>Your shelf & active products</p></div>
+        <div class="routine-tabs">
+          <div class="routine-tab active" onclick="switchRoutineTab('shelf',this)">Your Shelf</div>
+          <div class="routine-tab" onclick="switchRoutineTab('log',this)">Product Log</div>
+        </div>
+
+        <!-- SHELF -->
+        <div class="routine-panel active" id="routine-shelf">
+          <div class="shelf-intro">Scan or search your products. Luni checks ingredients against acne research — comedogenic ratings, evidence-backed actives, and known irritants. Consult your dermatologist for a personalised routine.</div>
+          <div class="scan-row">
+            <button class="scan-btn" onclick="alert('In the real app, point your camera at a product barcode.')">📷 Scan barcode</button>
+            <button class="search-btn" onclick="alert('In the real app, search by product name or brand.')">🔍 Search product…</button>
+          </div>
+
+          <!-- Product: La Roche-Posay Effaclar -->
+          <div class="shelf-product" onclick="toggleProduct(this)">
+            <div class="shelf-product-head">
+              <div class="shelf-product-icon">🧴</div>
+              <div class="shelf-product-info">
+                <div class="shelf-product-name">La Roche-Posay Effaclar</div>
+                <div class="shelf-product-type">Foaming Cleanser</div>
+              </div>
+              <div class="shelf-badge good">✅ Acne-appropriate</div>
+            </div>
+            <div class="ampm-row" onclick="event.stopPropagation()">
+              <span class="ampm-label">Use:</span>
+              <span class="ampm-opt sel" onclick="selAmPm(this)">☀️ AM</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">🌙 PM</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">Both</span>
+            </div>
+            <div class="shelf-product-ingredients">
+              <div class="ingr-row"><span class="ingr-name">Zinc Pidolate</span><span class="ingr-tag good">Sebum-regulating</span></div>
+              <div class="ingr-row"><span class="ingr-name">Niacinamide</span><span class="ingr-tag good">Anti-inflammatory</span></div>
+              <div class="ingr-row"><span class="ingr-name">No comedogenic ingredients</span><span class="ingr-tag good">Pore-safe ✓</span></div>
+            </div>
+          </div>
+
+          <!-- Product: The Ordinary Niacinamide -->
+          <div class="shelf-product" onclick="toggleProduct(this)">
+            <div class="shelf-product-head">
+              <div class="shelf-product-icon">🧪</div>
+              <div class="shelf-product-info">
+                <div class="shelf-product-name">The Ordinary Niacinamide 10%</div>
+                <div class="shelf-product-type">Serum</div>
+              </div>
+              <div class="shelf-badge good">✅ Acne-appropriate</div>
+            </div>
+            <div class="ampm-row" onclick="event.stopPropagation()">
+              <span class="ampm-label">Use:</span>
+              <span class="ampm-opt sel" onclick="selAmPm(this)">☀️ AM</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">🌙 PM</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">Both</span>
+            </div>
+            <div class="shelf-product-ingredients">
+              <div class="ingr-row"><span class="ingr-name">Niacinamide 10%</span><span class="ingr-tag good">RCT evidence for acne</span></div>
+              <div class="ingr-row"><span class="ingr-name">Zinc PCA</span><span class="ingr-tag good">Sebum control</span></div>
+              <div class="ingr-row"><span class="ingr-name">No comedogenic ingredients</span><span class="ingr-tag good">Pore-safe ✓</span></div>
+            </div>
+          </div>
+
+          <!-- Product: Paula's Choice BHA -->
+          <div class="shelf-product" onclick="toggleProduct(this)">
+            <div class="shelf-product-head">
+              <div class="shelf-product-icon">💧</div>
+              <div class="shelf-product-info">
+                <div class="shelf-product-name">Paula's Choice BHA 2%</div>
+                <div class="shelf-product-type">Exfoliant · Salicylic Acid</div>
+              </div>
+              <div class="shelf-badge good">✅ Acne-appropriate</div>
+            </div>
+            <div class="ampm-row" onclick="event.stopPropagation()">
+              <span class="ampm-label">Use:</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">☀️ AM</span>
+              <span class="ampm-opt sel" onclick="selAmPm(this)">🌙 PM</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">Both</span>
+            </div>
+            <div class="shelf-product-ingredients">
+              <div class="ingr-row"><span class="ingr-name">Salicylic Acid 2%</span><span class="ingr-tag good">Exfoliates inside pores</span></div>
+              <div class="ingr-row"><span class="ingr-name">Green Tea Extract</span><span class="ingr-tag good">Anti-inflammatory</span></div>
+              <div class="ingr-row"><span class="ingr-name">Methylpropanediol</span><span class="ingr-tag neutral">Neutral</span></div>
+            </div>
+          </div>
+
+          <!-- Product: The Ordinary Retinol -->
+          <div class="shelf-product" onclick="toggleProduct(this)">
+            <div class="shelf-product-head">
+              <div class="shelf-product-icon">🌿</div>
+              <div class="shelf-product-info">
+                <div class="shelf-product-name">The Ordinary Retinol 0.5%</div>
+                <div class="shelf-product-type">Retinoid Treatment</div>
+              </div>
+              <div class="shelf-badge note">⚠️ Worth noting</div>
+            </div>
+            <div class="ampm-row" onclick="event.stopPropagation()">
+              <span class="ampm-label">Use:</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">☀️ AM</span>
+              <span class="ampm-opt sel" onclick="selAmPm(this)">🌙 PM</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">Both</span>
+            </div>
+            <div class="shelf-product-ingredients">
+              <div class="ingr-row"><span class="ingr-name">Retinol 0.5%</span><span class="ingr-tag good">Evidence-backed for acne</span></div>
+              <div class="ingr-row"><span class="ingr-name">Squalane</span><span class="ingr-tag neutral">Neutral · non-comedogenic</span></div>
+              <div class="ingr-row"><span class="ingr-name">⚠️ Do not use same night as BHA</span><span class="ingr-tag caution">Interaction</span></div>
+            </div>
+          </div>
+
+          <!-- Product: Altruist SPF -->
+          <div class="shelf-product" onclick="toggleProduct(this)">
+            <div class="shelf-product-head">
+              <div class="shelf-product-icon">☀️</div>
+              <div class="shelf-product-info">
+                <div class="shelf-product-name">Altruist SPF 50</div>
+                <div class="shelf-product-type">Sunscreen</div>
+              </div>
+              <div class="shelf-badge good">✅ Acne-appropriate</div>
+            </div>
+            <div class="ampm-row" onclick="event.stopPropagation()">
+              <span class="ampm-label">Use:</span>
+              <span class="ampm-opt sel" onclick="selAmPm(this)">☀️ AM</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">🌙 PM</span>
+              <span class="ampm-opt" onclick="selAmPm(this)">Both</span>
+            </div>
+            <div class="shelf-product-ingredients">
+              <div class="ingr-row"><span class="ingr-name">Uvinul A Plus</span><span class="ingr-tag good">Broad-spectrum UVA</span></div>
+              <div class="ingr-row"><span class="ingr-name">Tinosorb S</span><span class="ingr-tag good">UVB protection</span></div>
+              <div class="ingr-row"><span class="ingr-name">No comedogenic ingredients</span><span class="ingr-tag good">Pore-safe ✓</span></div>
+            </div>
+          </div>
+
+          <div style="padding:10px 16px 0;">
+            <button class="cta-btn" style="background:var(--card);color:var(--burgundy);border:1.5px solid var(--border);" onclick="openAddProduct()">+ Add product to shelf</button>
+          </div>
+          <div class="note-box" style="margin-bottom:4px;">ℹ️ What you see here is based on what ingredients are known to do for acne-prone skin — not a personalised routine. For advice tailored to you, speak to a dermatologist.</div>
+        </div>
+
+        <!-- PRODUCT LOG -->
+        <div class="routine-panel" id="routine-log">
+          <div class="note-box" style="margin:10px 16px 0;">Products are assumed active until you mark them stopped. Luni tracks your active products to look for correlations with your skin over time.</div>
+
+          <div class="product-log-block" style="margin-top:10px;">
+            <div class="product-log-head">☀️ Morning routine</div>
+            <div class="product-log-row">
+              <span class="product-log-icon">🧴</span>
+              <div class="product-log-info"><div class="product-log-name">La Roche-Posay Effaclar</div><div class="product-log-sub">Cleanser · in use since May 10</div></div>
+              <span class="active-toggle on" onclick="toggleActive(this)">Active</span>
+            </div>
+            <div class="product-log-row">
+              <span class="product-log-icon">🧪</span>
+              <div class="product-log-info"><div class="product-log-name">The Ordinary Niacinamide 10%</div><div class="product-log-sub">Serum · in use since May 10</div></div>
+              <span class="active-toggle on" onclick="toggleActive(this)">Active</span>
+            </div>
+            <div class="product-log-row">
+              <span class="product-log-icon">☀️</span>
+              <div class="product-log-info"><div class="product-log-name">Altruist SPF 50</div><div class="product-log-sub">Sunscreen · in use since May 10</div></div>
+              <span class="active-toggle on" onclick="toggleActive(this)">Active</span>
+            </div>
+          </div>
+
+          <div class="product-log-block" style="margin-top:10px;">
+            <div class="product-log-head">🌙 Evening routine</div>
+            <div class="product-log-row">
+              <span class="product-log-icon">💧</span>
+              <div class="product-log-info"><div class="product-log-name">Paula's Choice BHA 2%</div><div class="product-log-sub">Exfoliant · in use since May 10</div></div>
+              <span class="active-toggle on" onclick="toggleActive(this)">Active</span>
+            </div>
+            <div class="product-log-row">
+              <span class="product-log-icon">🌿</span>
+              <div class="product-log-info"><div class="product-log-name">The Ordinary Retinol 0.5%</div><div class="product-log-sub">Treatment · alternate nights with BHA</div></div>
+              <span class="active-toggle on" onclick="toggleActive(this)">Active</span>
+            </div>
+          </div>
+
+          <div class="note-box">Luni will flag in the Analysis tab if a skin change appears after you add or remove a product. This takes several weeks of consistent logging to surface.</div>
+        </div>
+      </div>
+
+      <!-- LUNI -->
+      <div class="screen" id="screen-luni">
+        <div class="luni-header">
+          <div class="luni-header-avatar">🌙</div>
+          <div class="luni-header-text"><h1>Luni</h1><p>Evidence-based skin & cycle AI</p></div>
+        </div>
+        <div class="quick-chips">
+          <span class="chip" onclick="addLuniMsg(this)">Why do I break out before my period?</span>
+          <span class="chip" onclick="addLuniMsg(this)">What should I eat this week?</span>
+          <span class="chip" onclick="addLuniMsg(this)">When will I see results?</span>
+          <span class="chip" onclick="addLuniMsg(this)">What's causing my chin spots?</span>
+        </div>
+        <div class="chat-area" id="luniChatArea">
+          <div class="msg luni">
+            <div class="lbl">Luni</div>
+            <span id="luniWelcomeMsg">Hi. I can help you understand what the research says about hormonal acne, and spot your own patterns over time as you log. What would you like to know?</span>
+            <div class="msg-note">General education only — not medical advice. Always consult a dermatologist for diagnosis or treatment.</div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="luniInput" placeholder="Ask about your skin…" onkeydown="if(event.key==='Enter')sendLuniChat()">
+          <button class="send-btn" onclick="sendLuniChat()">↑</button>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="screen" id="screen-profile">
+        <div class="profile-header">
+          <div class="profile-avatar">J</div>
+          <div class="profile-name" id="profileNameDisplay">Jasmin Mantwill</div>
+          <div class="profile-since">Since May 2026 · 🔥 1-day streak</div>
+          <div class="profile-stats">
+            <div class="pstat"><div class="pstat-val">1</div><div class="pstat-lbl">Days logged</div></div>
+            <div class="pstat"><div class="pstat-val">1</div><div class="pstat-lbl">Cycles</div></div>
+            <div class="pstat"><div class="pstat-val">0</div><div class="pstat-lbl">Patterns</div></div>
+          </div>
+        </div>
+        <div class="section-title">Connected apps</div>
+        <div class="apps-row">
+          <div class="app-chip"><span class="dot"></span> Apple Health</div>
+          <div class="app-chip"><span class="dot grey"></span> Flo · soon</div>
+          <div class="app-chip"><span class="dot grey"></span> Clue · soon</div>
+          <div class="app-chip"><span class="dot grey"></span> Oura · soon</div>
+        </div>
+        <div class="section-title" style="margin-top:4px;">Tools</div>
+        <div class="menu-block">
+          <div class="menu-row" onclick="alert('Your 90-day skin, food, lifestyle and treatment log — formatted for a dermatologist appointment.')"><span class="menu-icon">🩺</span><span class="menu-label">Derm appointment prep</span><span class="menu-arrow">›</span></div>
+          <div class="menu-row" onclick="alert('A PDF of your 90-day data — cycle phases, skin log, food log, lifestyle and treatment patterns.')"><span class="menu-icon">📄</span><span class="menu-label">Doctor report (90 days)</span><span class="menu-arrow">›</span></div>
+          <div class="menu-row" onclick="alert('Set reminders to log skin, food and lifestyle.')"><span class="menu-icon">🔔</span><span class="menu-label">Reminders</span><span class="menu-arrow">›</span></div>
+          <div class="menu-row" onclick="alert('Your data belongs to you. Nothing is sold or shared without explicit opt-in.')"><span class="menu-icon">🔒</span><span class="menu-label">Privacy & data</span><span class="menu-arrow">›</span></div>
+        </div>
+      </div>
+
+    </div><!-- /screens -->
+
+    <!-- ADD PRODUCT MODAL -->
+    <!-- Products assessed on ingredient evidence only — not cycle phase (principle 2).
+         Match badges: Great match / Match = acne-appropriate ingredients.
+         Use with care / Check formula = comedogenic or known irritants.
+         Where to buy reflects user's onboarding retailer preferences (principle 11).
+         "Safe for your skin" = non-comedogenic + no known acne-aggravating ingredients.
+         No clinical diagnosis implied. -->
+    <div class="modal-overlay" id="addProductModal" onclick="handleModalOverlayClick(event)">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+          <span class="modal-title">Add product</span>
+          <button class="modal-close" onclick="closeAddProduct()">×</button>
+        </div>
+        <div class="modal-search">
+          <span style="color:var(--muted);font-size:16px;">🔍</span>
+          <input type="text" placeholder="Search product name or brand…" oninput="filterProducts(this.value)">
+        </div>
+        <div class="modal-filters">
+          <span class="filter-chip sel" onclick="setFilter(this,'all')">All</span>
+          <span class="filter-chip" onclick="setFilter(this,'u5')">Under €5</span>
+          <span class="filter-chip" onclick="setFilter(this,'u15')">Under €15</span>
+          <span class="filter-chip" onclick="setFilter(this,'u35')">Under €35</span>
+          <span class="filter-chip" onclick="setFilter(this,'korean')">🇰🇷 Korean</span>
+          <span class="filter-chip" onclick="setFilter(this,'organic')">🌿 Organic</span>
+          <span class="filter-chip" onclick="setFilter(this,'sample')">🧪 Sample available</span>
+        </div>
+        <div class="modal-list" id="modalProductList"></div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active" data-screen="home" onclick="switchTab('home',this)"><span class="nav-icon">🏠</span><span class="nav-label">Home</span><div class="nav-dot"></div></div>
+      <div class="nav-item" data-screen="scan" onclick="switchTab('scan',this)"><span class="nav-icon">📷</span><span class="nav-label">Scan</span><div class="nav-dot"></div></div>
+      <div class="nav-item" data-screen="routine" onclick="switchTab('routine',this)"><span class="nav-icon">🧴</span><span class="nav-label">Routine</span><div class="nav-dot"></div></div>
+      <div class="nav-item" data-screen="luni" onclick="switchTab('luni',this)"><span class="nav-icon">💬</span><span class="nav-label">Luni</span><div class="nav-dot"></div></div>
+      <div class="nav-item" data-screen="profile" onclick="switchTab('profile',this)"><span class="nav-icon">👤</span><span class="nav-label">Profile</span><div class="nav-dot"></div></div>
+    </div>
+  </div><!-- /mainApp -->
+</div><!-- /phone -->
+
+<script>
+// ── Profile ──
+const profile = {
+  name:'', breakoutLocations:[], duration:'', tried:[],
+  budget:'', shops:[], productPref:'',
+  onMedication:false, medication:'', medicationStart:null,
+  lastPeriod:null, cycleLength:28
+};
+
+let currentStep = 0;
+const totalSteps = 6;
+const obChat = document.getElementById('obChat');
+const obInputArea = document.getElementById('obInputArea');
+
+// ── Log state ──
+const logState = { sleep:false, stress:false, skin:false, food:false, cycle:false, treatment:false };
+let logDone = 0;
+
+function updateLogProgress() {
+  const total = profile.onMedication ? 6 : 5;
+  const done = Object.values(logState).filter(Boolean).length;
+  document.getElementById('logProgressLabel').textContent = `${done} of ${total} done`;
+}
+
+function homeLog(el, type) {
+  el.closest('.home-log-opts').querySelectorAll('.h-opt').forEach(o => o.classList.remove('sel','done'));
+  el.classList.add('sel');
+  if (!logState[type]) { logState[type] = true; updateLogProgress(); }
+}
+
+function markSkinLogged() {
+  if (!logState.skin) { logState.skin = true; updateLogProgress(); }
+  const el = document.getElementById('hlSkinStatus');
+  if (el) { el.textContent = 'Logged ✓'; el.style.color = 'var(--green)'; }
+}
+function markFoodLogged() {
+  if (!logState.food) { logState.food = true; updateLogProgress(); }
+  const el = document.getElementById('hlFoodStatus');
+  if (el) { el.textContent = 'Logged ✓'; el.style.color = 'var(--green)'; }
+}
+function markCycleLogged() {
+  if (!logState.cycle) { logState.cycle = true; updateLogProgress(); }
+  const el = document.getElementById('hlCycleStatus');
+  if (el) { el.textContent = 'Logged ✓'; el.style.color = 'var(--green)'; }
+}
+
+function goLog(tab) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('screen-log').classList.add('active');
+  const tabEls = document.querySelectorAll('.log-tab:not(.hidden)');
+  // tabs: Skin(0) Cycle(1) Food(2) Lifestyle(3) Analysis(4) — Treatment hidden unless on meds
+  const tabMap = { skin:0, cycle:1, food:2, lifestyle:3, analysis:4 };
+  const idx = tabMap[tab] !== undefined ? tabMap[tab] : 0;
+  if(tabEls[idx]) switchLogTab(tab, tabEls[idx]);
+}
+
+// ── Onboarding ──
+function updateProgress() {
+  document.getElementById('obProgress').style.width = Math.round((currentStep/totalSteps)*100)+'%';
+}
+function appendLuni(text, delay=0) {
+  return new Promise(resolve => setTimeout(() => {
+    const el = document.createElement('div');
+    el.className = 'ob-msg luni';
+    el.innerHTML = `<div class="lbl">Luni</div>${text}`;
+    obChat.appendChild(el);
+    obChat.scrollTop = obChat.scrollHeight;
+    resolve();
+  }, delay));
+}
+function appendUser(text) {
+  const el = document.createElement('div');
+  el.className = 'ob-msg user';
+  el.textContent = text;
+  obChat.appendChild(el);
+  obChat.scrollTop = obChat.scrollHeight;
+}
+function clearInput() { obInputArea.innerHTML = ''; }
+function enableContinue() { const b = obInputArea.querySelector('.ob-continue'); if(b) b.classList.add('ready'); }
+
+async function step0() {
+  updateProgress();
+  await appendLuni("Hi. I'm Luni.<br><br>I'm here to help you understand your skin — not tell you what to do, but find what's actually going on.", 300);
+  await appendLuni("What's your name?", 900);
+  clearInput();
+  obInputArea.innerHTML = `<div class="ob-text-row"><input class="ob-text" id="nameInput" placeholder="Your first name…" autocomplete="off"><button class="ob-send" onclick="submitName()">↑</button></div>`;
+  document.getElementById('nameInput').onkeydown = e => { if(e.key==='Enter') submitName(); };
+  setTimeout(() => document.getElementById('nameInput').focus(), 100);
+}
+function submitName() {
+  const val = document.getElementById('nameInput').value.trim();
+  if(!val) return;
+  profile.name = val;
+  appendUser(val);
+  currentStep=1; step1();
+}
+
+async function step1() {
+  updateProgress();
+  await appendLuni(`Hi ${profile.name}. Tell me about your skin.`, 600);
+  clearInput();
+  obInputArea.innerHTML = `
+    <div class="ob-question-card">
+      <div class="qlabel">Where do you usually break out?</div>
+      <div class="ob-options" id="locOpts">
+        <span class="ob-opt" onclick="toggleOpt(this)">Chin & jaw</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Forehead</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Cheeks</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Nose & T-zone</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Varies</span>
+      </div>
+      <div class="ob-divider"></div>
+      <div class="qlabel">How long have you been dealing with this?</div>
+      <div class="ob-options" id="durOpts">
+        <span class="ob-opt" onclick="singleOpt(this)">Under 1 year</span>
+        <span class="ob-opt" onclick="singleOpt(this)">1–3 years</span>
+        <span class="ob-opt" onclick="singleOpt(this)">3–5 years</span>
+        <span class="ob-opt" onclick="singleOpt(this)">5+ years</span>
+      </div>
+      <div class="ob-divider"></div>
+      <div class="qlabel">What have you already tried?</div>
+      <div class="ob-options" id="triedOpts">
+        <span class="ob-opt" onclick="toggleOpt(this)">Lots of skincare products</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Dermatologist</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Birth control for acne</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Diet changes</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Cycle tracking apps</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Nothing yet</span>
+      </div>
+    </div>
+    <button class="ob-continue" onclick="submitStep1()">Continue →</button>`;
+}
+function toggleOpt(el) { el.classList.toggle('sel'); checkS1(); }
+function singleOpt(el) { el.closest('.ob-options').querySelectorAll('.ob-opt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel'); checkS1(); }
+function checkS1() { if(document.querySelectorAll('#locOpts .sel').length && document.querySelectorAll('#durOpts .sel').length) enableContinue(); }
+function submitStep1() {
+  profile.breakoutLocations = [...document.querySelectorAll('#locOpts .sel')].map(e=>e.textContent);
+  profile.duration = document.querySelector('#durOpts .sel')?.textContent||'';
+  profile.tried = [...document.querySelectorAll('#triedOpts .sel')].map(e=>e.textContent);
+  appendUser(`${profile.breakoutLocations.join(', ')||'various'} · ${profile.duration}`);
+  currentStep=2; step2();
+}
+
+async function step2() {
+  updateProgress();
+  await appendLuni('So I can suggest products appropriate for acne-prone skin — within your budget and available where you already shop.', 700);
+  clearInput();
+  obInputArea.innerHTML = `
+    <div class="ob-question-card">
+      <div class="qlabel">Budget per product</div>
+      <div class="ob-options" id="budgetOpts">
+        <span class="ob-opt" onclick="singleOpt(this);checkS2()">Under €10</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkS2()">€10–25</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkS2()">€25–50</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkS2()">No limit</span>
+      </div>
+      <div class="ob-divider"></div>
+      <div class="qlabel">Where do you usually shop?</div>
+      <div class="ob-options" id="shopOpts">
+        <span class="ob-opt" onclick="toggleOpt(this)">dm</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Rossmann</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Müller</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Douglas</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Amazon</span>
+        <span class="ob-opt" onclick="toggleOpt(this)">Pharmacy</span>
+      </div>
+      <div class="ob-divider"></div>
+      <div class="qlabel">Product preference</div>
+      <div class="ob-options" id="prefOpts">
+        <span class="ob-opt" onclick="singleOpt(this)">No preference</span>
+        <span class="ob-opt" onclick="singleOpt(this)">German & European</span>
+        <span class="ob-opt" onclick="singleOpt(this)">Korean skincare</span>
+        <span class="ob-opt" onclick="singleOpt(this)">Pharmacy brands</span>
+      </div>
+    </div>
+    <button class="ob-continue" onclick="submitStep2()">Continue →</button>`;
+}
+function checkS2() { if(document.querySelectorAll('#budgetOpts .sel').length) enableContinue(); }
+function submitStep2() {
+  profile.budget = document.querySelector('#budgetOpts .sel')?.textContent||'';
+  profile.shops = [...document.querySelectorAll('#shopOpts .sel')].map(e=>e.textContent);
+  profile.productPref = document.querySelector('#prefOpts .sel')?.textContent||'No preference';
+  appendUser(`${profile.budget} · ${profile.shops.join(', ')||'various'} · ${profile.productPref}`);
+  currentStep=3; step3();
+}
+
+async function step3() {
+  updateProgress();
+  await appendLuni('Are you currently using anything prescribed for your acne — a cream, pill, or anything from a dermatologist?', 700);
+  clearInput();
+  obInputArea.innerHTML = `<div class="ob-options" style="justify-content:center;gap:16px;">
+    <span class="ob-opt" style="padding:12px 32px;font-size:14px;" onclick="submitMed(true)">Yes</span>
+    <span class="ob-opt" style="padding:12px 32px;font-size:14px;" onclick="submitMed(false)">No</span>
+  </div>`;
+}
+async function submitMed(yes) {
+  appendUser(yes?'Yes':'No');
+  profile.onMedication=yes;
+  if(yes) { await step3b(); }
+  else { await appendLuni("No problem — I'll track your skin, diet, sleep and stress as you log.", 700); currentStep=4; step4(); }
+}
+async function step3b() {
+  await appendLuni('What are you using?', 600);
+  clearInput();
+  obInputArea.innerHTML = `
+    <div class="ob-question-card">
+      <div class="qlabel">Select or type</div>
+      <div class="ob-options" id="medOpts">
+        <span class="ob-opt" onclick="singleOpt(this);checkMed()">Tretinoin</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkMed()">Clindamycin</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkMed()">Azelaic acid</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkMed()">Combined pill</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkMed()">Spironolactone</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkMed()">Antibiotics (oral)</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkMed()">Other</span>
+      </div>
+      <input class="ob-text" id="medCustom" placeholder="Or type name…" style="width:100%;margin-top:8px;" oninput="checkMed()">
+      <div class="ob-divider"></div>
+      <div class="qlabel">When did you start?</div>
+      <div class="ob-calendar" id="medCal"></div>
+    </div>
+    <button class="ob-continue" onclick="submitMedDetails()">Continue →</button>`;
+  renderCal('medCal', null, d => { profile.medicationStart=d; checkMed(); });
+}
+function checkMed() {
+  const hasMed = document.querySelector('#medOpts .sel') || document.getElementById('medCustom')?.value.trim();
+  if(hasMed && profile.medicationStart) enableContinue();
+}
+async function submitMedDetails() {
+  profile.medication = document.getElementById('medCustom')?.value.trim() || document.querySelector('#medOpts .sel')?.textContent || 'Prescribed treatment';
+  appendUser(`${profile.medication} · started ${formatDate(profile.medicationStart)}`);
+  await appendLuni(`Got it. I'll track your skin response alongside your ${profile.medication} treatment — so you can see how things change over time and bring that data to your next dermatologist appointment.`, 700);
+  currentStep=4; step4();
+}
+
+async function step4() {
+  updateProgress();
+  await appendLuni(`I look for patterns between your skin, diet, sleep, stress — and your menstrual cycle, because hormonal shifts are one factor that may be contributing.<br><br>To do that I need to know where you are in your cycle. When did your last period start?`, 900);
+  clearInput();
+  obInputArea.innerHTML = `
+    <div class="ob-question-card">
+      <div class="qlabel">Last period start date</div>
+      <div class="ob-calendar" id="periodCal"></div>
+      <div class="ob-divider"></div>
+      <div class="qlabel">How long is your cycle usually?</div>
+      <div class="ob-options" id="cycleOpts">
+        <span class="ob-opt" onclick="singleOpt(this);checkCycle()">Under 25 days</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkCycle()">25–30 days</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkCycle()">31–35 days</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkCycle()">Irregular</span>
+        <span class="ob-opt" onclick="singleOpt(this);checkCycle()">Not sure</span>
+      </div>
+    </div>
+    <button class="ob-continue" onclick="submitCycle()">Continue →</button>`;
+  renderCal('periodCal', null, d => { profile.lastPeriod=d; checkCycle(); });
+}
+function checkCycle() { if(profile.lastPeriod && document.querySelector('#cycleOpts .sel')) enableContinue(); }
+function submitCycle() {
+  const cs = document.querySelector('#cycleOpts .sel')?.textContent||'25–30 days';
+  profile.cycleLength = cs.includes('31–35')?33:cs.includes('Under')?23:28;
+  appendUser(`Last period: ${formatDate(profile.lastPeriod)} · Cycle: ${cs}`);
+  currentStep=5; step5();
+}
+
+async function step5() {
+  updateProgress();
+  await appendLuni(`That's everything I need.<br><br>As you log each day, I'll start connecting the dots between your cycle, sleep, diet and skin. The more you log, the clearer the picture gets.`, 700);
+  clearInput();
+  obInputArea.innerHTML = `<button class="ob-continue ready" onclick="launchApp()" style="font-size:15px;padding:15px;">Start logging →</button>`;
+}
+
+function launchApp() {
+  // personalise
+  document.getElementById('homeNameDisplay').textContent = profile.name||'Jasmin';
+  document.getElementById('profileNameDisplay').textContent = (profile.name||'Jasmin')+' Mantwill';
+
+  // cycle
+  if(profile.lastPeriod) {
+    const today=new Date();
+    const daysSince=Math.floor((today-profile.lastPeriod)/86400000)+1;
+    const cycleDay=((daysSince-1)%profile.cycleLength)+1;
+    const phase=getPhase(cycleDay,profile.cycleLength);
+    document.getElementById('homeCycleDay').textContent=`Day ${cycleDay} of ${profile.cycleLength}`;
+    document.getElementById('homeCycleBadge').textContent=`Day ${cycleDay}`;
+    document.getElementById('homeCyclePhase').textContent=phaseEmoji(phase)+' '+phase+' Phase';
+    const skinTag = document.getElementById('skinPhaseTag');
+    if (skinTag) skinTag.textContent=phase;
+    document.getElementById('homePhaseFill').style.width=Math.round((cycleDay/profile.cycleLength)*100)+'%';
+  }
+
+  // treatment tab
+  if(profile.onMedication && profile.medication) {
+    document.getElementById('treatmentTab').classList.remove('hidden');
+    document.getElementById('treatmentName').textContent=profile.medication;
+    document.getElementById('hlTreatment').style.display='flex';
+    document.getElementById('hlTreatmentLabel').textContent=profile.medication;
+    if(profile.medicationStart) {
+      document.getElementById('treatmentStartDisplay').textContent=formatDate(profile.medicationStart);
+      document.getElementById('treatmentDayNum').textContent=Math.floor((new Date()-profile.medicationStart)/86400000)+1;
+    }
+  }
+
+  // luni welcome
+  document.getElementById('luniWelcomeMsg').textContent=`Hi ${profile.name||'there'}. I can help you understand what the research says about hormonal acne, and spot your own patterns over time as you log. What would you like to know?`;
+
+  document.getElementById('onboarding').style.display='none';
+  document.getElementById('mainApp').classList.add('show');
+  // initialise skin timeline since skin tab is active by default
+  setTimeout(() => renderTimeline(), 100);
+}
+
+function getPhase(day,len) {
+  if(day<=5) return 'Menstrual';
+  if(day<=Math.round(len*0.45)) return 'Follicular';
+  if(day<=Math.round(len*0.54)) return 'Ovulatory';
+  return 'Luteal';
+}
+function phaseEmoji(p) { return{Menstrual:'🔴',Follicular:'🌱',Ovulatory:'🌸',Luteal:'🌙'}[p]||'🌙'; }
+
+// ── Calendar ──
+function renderCal(id, sel, onSel) {
+  const c=document.getElementById(id); if(!c) return;
+  const now=new Date(); let year=now.getFullYear(), month=now.getMonth(), selected=sel;
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function draw() {
+    const fd=new Date(year,month,1).getDay(), dim=new Date(year,month+1,0).getDate(), so=(fd+6)%7;
+    let h=`<div class="cal-header"><button class="cal-nav" onclick="calShift('${id}',-1)">‹</button><span class="cal-month">${MN[month]} ${year}</span><button class="cal-nav" onclick="calShift('${id}',1)">›</button></div><div class="cal-grid"><div class="cal-day-label">Mo</div><div class="cal-day-label">Tu</div><div class="cal-day-label">We</div><div class="cal-day-label">Th</div><div class="cal-day-label">Fr</div><div class="cal-day-label">Sa</div><div class="cal-day-label">Su</div>`;
+    for(let i=0;i<so;i++) h+=`<div class="cal-day empty"></div>`;
+    for(let d=1;d<=dim;d++) {
+      const dt=new Date(year,month,d);
+      const cls=['cal-day',dt.toDateString()===now.toDateString()?'today':'',dt>now?'future':'',selected&&dt.toDateString()===selected.toDateString()?'selected':''].join(' ');
+      h+=`<div class="${cls}" onclick="calPick('${id}',${year},${month},${d})">${d}</div>`;
+    }
+    h+='</div>'; c.innerHTML=h; c._y=year; c._m=month; c._sel=selected; c._cb=onSel;
+  }
+  c._shift=dir=>{ month+=dir; if(month>11){month=0;year++;}if(month<0){month=11;year--;} draw(); };
+  draw();
+}
+function calShift(id,dir) { const c=document.getElementById(id); if(c&&c._shift) c._shift(dir); }
+function calPick(id,y,m,d) {
+  const c=document.getElementById(id); if(!c) return;
+  const dt=new Date(y,m,d); c._sel=dt; if(c._cb) c._cb(dt);
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const now=new Date(); const fd=new Date(y,m,1).getDay(); const dim=new Date(y,m+1,0).getDate(); const so=(fd+6)%7;
+  let h=`<div class="cal-header"><button class="cal-nav" onclick="calShift('${id}',-1)">‹</button><span class="cal-month">${MN[m]} ${y}</span><button class="cal-nav" onclick="calShift('${id}',1)">›</button></div><div class="cal-grid"><div class="cal-day-label">Mo</div><div class="cal-day-label">Tu</div><div class="cal-day-label">We</div><div class="cal-day-label">Th</div><div class="cal-day-label">Fr</div><div class="cal-day-label">Sa</div><div class="cal-day-label">Su</div>`;
+  for(let i=0;i<so;i++) h+=`<div class="cal-day empty"></div>`;
+  for(let dd=1;dd<=dim;dd++) {
+    const ddt=new Date(y,m,dd);
+    const cls=['cal-day',ddt.toDateString()===now.toDateString()?'today':'',ddt>now?'future':'',ddt.toDateString()===dt.toDateString()?'selected':''].join(' ');
+    h+=`<div class="${cls}" onclick="calPick('${id}',${y},${m},${dd})">${dd}</div>`;
+  }
+  h+='</div>'; c.innerHTML=h; c._y=y; c._m=m;
+}
+function formatDate(d) { if(!d) return '—'; return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+
+// ── App nav ──
+function switchTab(id,el) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('screen-'+id).scrollTop=0;
+}
+function switchRoutineTab(id,el) {
+  document.querySelectorAll('.routine-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.routine-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('routine-'+id).classList.add('active');
+}
+function selOpt(el) { el.closest('.ls-options').querySelectorAll('.ls-opt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel'); }
+function selTOpt(el) { el.closest('.t-opts').querySelectorAll('.t-opt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel'); }
+function toggleProduct(el) { el.classList.toggle('expanded'); }
+function toggleActive(el) {
+  const on = el.classList.contains('on');
+  el.classList.toggle('on',!on);
+  el.textContent = on ? 'Stopped' : 'Active';
+}
+
+// ── Luni chat — dynamic topic-matching engine ──
+// Covers ~25 question categories via keyword matching.
+// All responses grounded in clinical principles:
+// - Evidence cited by type (RCT, systematic review, observational)
+// - Population vs personal clearly distinguished
+// - No phase-based product advice
+// - No diagnosis, no treatment recommendations
+// - Redirects clinical questions to dermatologist
+// Falls back gracefully for anything unrecognised.
+
+const luniTopics = [
+  {
+    keys: ['break out','breakout','period','premenstrual','before my period','luteal','hormonal'],
+    responses: [
+      ["In the late luteal phase, estrogen and progesterone both drop, making androgens relatively more dominant. This increases sebum production and can trigger inflammation — particularly around the chin and jaw.", "A peer-reviewed study found around 63% of adult women experience more acne lesions in the late luteal phase. Sensitivity varies significantly between individuals.", "If your breakouts are severe or affecting your quality of life, a dermatologist can assess whether hormonal treatment is appropriate for you."],
+      ["Hormonal acne is driven by androgen activity — specifically in the days before your period when estrogen falls and relative androgen levels rise.", "This is one of the best-evidenced patterns in acne research. What varies between women is how strongly their skin responds to those hormonal shifts.", "Logging your skin consistently across cycles will show whether this pattern holds for you personally."],
+    ]
+  },
+  {
+    keys: ['eat','diet','food','sugar','dairy','nutrition','omega','fish','carb'],
+    responses: [
+      ["The strongest dietary evidence for acne is around glycaemic index. Multiple RCTs show low-GI diets are associated with fewer acne lesions — via insulin and IGF-1, which stimulate sebum production.", "Dairy is associated with acne in observational research, though causality isn't fully established and individual response varies significantly.", "Omega-3 rich foods like salmon, walnuts and flaxseed have shown promise — a 2024 prospective study found significant lesion reduction when omega-3 levels improved. Effects appear over weeks, not days."],
+      ["Research consistently links high-glycaemic foods (white bread, sugary drinks, processed carbs) with acne through the insulin pathway. A 2022 systematic review of 34 studies supported this association.", "Dairy — especially skimmed milk — is associated with acne in some populations, likely via IGF-1. But it's not universal. Your food log will tell you whether dairy coincides with your flares.", "Anti-inflammatory foods like oily fish, leafy greens and walnuts are worth prioritising. Effects build over 8–12 weeks of consistent intake."],
+    ]
+  },
+  {
+    keys: ['sleep','tired','rest','insomnia','night'],
+    responses: [
+      ["Poor sleep is one of the most commonly reported acne triggers — and there's good research behind it.", "A 2024 systematic review of 18 studies confirmed a bidirectional relationship: poor sleep worsens acne via elevated cortisol and impaired skin barrier, and acne in turn disrupts sleep. It works both ways.", "Your lifestyle log tracks sleep quality. Luni will look for whether your poor sleep weeks coincide with more logged breakouts — that pattern typically takes a few cycles to confirm."],
+      ["Sleep deprivation raises cortisol, which directly stimulates sebum production. It also impairs your skin's ability to repair overnight.", "This doesn't mean one bad night causes a breakout — the relationship is cumulative. Consistently poor sleep weeks tend to correlate with worse skin weeks.", "Log your sleep consistently and Luni will show you whether this is a pattern for you specifically."],
+    ]
+  },
+  {
+    keys: ['stress','anxious','anxiety','cortisol','work','overwhelm'],
+    responses: [
+      ["Stress raises cortisol, which stimulates sebaceous gland activity and increases sebum production. It's one of the most well-documented acne triggers.", "The relationship is cumulative rather than immediate — a stressful week tends to affect skin over the following days rather than overnight.", "Your lifestyle log tracks stress. Keep logging and Luni will look for whether your high-stress weeks coincide with more breakouts."],
+      ["Chronic stress and acne are closely linked through the cortisol-sebum pathway. This is well-established in dermatological research.", "Managing stress is genuinely one of the most useful things you can do for your skin — though I know that's easier said than done.", "If stress is a consistent factor for you, it's worth mentioning to a doctor alongside your logged data."],
+    ]
+  },
+  {
+    keys: ['chin','jaw','jawline','cheek','forehead','nose','where','location'],
+    responses: [
+      ["Chin and jaw breakouts are the distribution pattern most strongly associated with hormonal acne — driven by androgen activity particularly in the late luteal phase.", "Forehead spots are more often linked to digestive factors or hair products. Cheek acne can have multiple causes including sleep (which side you sleep on) and phone contact.", "I can only surface patterns from your logged data. A dermatologist can assess the underlying cause directly."],
+      ["The location of breakouts gives clues but not certainty. Chin and jaw is the classic hormonal pattern — it's the area with the highest density of androgen-sensitive sebaceous glands.", "Keep logging where your spots appear. Over several cycles, Luni will show you whether the location correlates with your cycle phase — which is the most useful signal."],
+    ]
+  },
+  {
+    keys: ['tretinoin','retinol','retinoid','vitamin a','retin'],
+    responses: [
+      ["Tretinoin is one of the most evidence-backed topical treatments for acne — it works by speeding up cell turnover and preventing follicles from clogging.", "Most people experience a purge period of 6–12 weeks where skin looks worse before it improves. This is normal and documented. It doesn't mean the treatment isn't working.", "If you're on tretinoin, log it in your Treatment tab. Luni will track your skin response against the treatment timeline so you can see your progress clearly."],
+      ["Retinoids are well-supported in acne research. The key is patience — clinical studies typically see meaningful improvement at 12–16 weeks.", "The purge phase can be discouraging but it's a sign the treatment is working. Skin getting worse in weeks 2–6 is expected for most people.", "Your treatment log will build a timeline your dermatologist can review at your next appointment."],
+    ]
+  },
+  {
+    keys: ['pill','birth control','contraceptive','spironolactone','hormone treatment','hormonal treatment'],
+    responses: [
+      ["Combined oral contraceptives are a well-evidenced treatment for hormonal acne — they work by reducing androgen activity.", "Spironolactone is another option commonly prescribed for hormonal acne in adult women — it blocks androgen receptors.", "Both are prescription treatments. If you're considering hormonal treatment for acne, a dermatologist or GP can assess whether it's appropriate for you based on your full medical picture."],
+      ["Hormonal treatments for acne work at the root cause rather than the surface — they reduce the androgen activity that drives sebum production.", "If you're already on hormonal treatment, log it in the Treatment tab. Luni will track your skin response against the start date so you can see how it's progressing."],
+    ]
+  },
+  {
+    keys: ['salicylic','bha','exfoliant','acid','niacinamide','azelaic','benzoyl','ingredient'],
+    responses: [
+      ["Salicylic acid (BHA) exfoliates inside the pore, making it particularly effective for blackheads and inflammatory acne. Multiple RCTs support its use.", "Niacinamide has good anti-inflammatory evidence and is well-tolerated by most skin types. It's one of the most broadly useful actives for acne-prone skin.", "Azelaic acid is also RCT-supported — it reduces inflammation and has some effect on post-acne marks. Worth considering if you haven't tried it."],
+      ["Ingredient-wise, the best-evidenced actives for acne are: salicylic acid, benzoyl peroxide, retinoids, azelaic acid, and niacinamide.", "The product scanner in Lunara checks your products against these. Scan anything you're considering and you'll see an instant ingredient assessment.", "A dermatologist can advise on which actives to prioritise for your specific acne type."],
+    ]
+  },
+  {
+    keys: ['moisturis','hydrat','dry skin','sensitive','barrier'],
+    responses: [
+      ["Moisturising is important even for oily, acne-prone skin. A damaged skin barrier can actually worsen acne by triggering more sebum production as a protective response.", "Look for non-comedogenic, fragrance-free moisturisers. Ingredients like ceramides, hyaluronic acid and glycerin are well-suited to acne-prone skin.", "Scan your current moisturiser in the app to check whether it contains any comedogenic ingredients."],
+      ["Oily skin still needs hydration — skipping moisturiser can cause the skin to overproduce sebum to compensate.", "During weeks when your skin feels more sensitive, a simple, minimal routine is usually better than adding more actives.", "If your skin is consistently reactive, mention it to a dermatologist — it can sometimes indicate an underlying sensitivity worth addressing."],
+    ]
+  },
+  {
+    keys: ['scar','mark','dark spot','hyperpigment','post acne','red mark'],
+    responses: [
+      ["Post-acne marks — both red (post-inflammatory erythema) and dark (post-inflammatory hyperpigmentation) — are very common and usually fade over time.", "Niacinamide has evidence for reducing hyperpigmentation. Azelaic acid also helps with post-acne marks. Sun protection (SPF daily) is essential to prevent marks from darkening.", "Deeper acne scars (ice-pick, rolling, boxcar) are different — they require dermatologist-level treatments like microneedling or chemical peels."],
+      ["Most post-acne marks fade within 3–6 months without treatment, especially in lighter skin tones. Consistent SPF use significantly speeds this up.", "Vitamin C serums and niacinamide have supporting evidence for fading hyperpigmentation. Both are available at low cost — The Ordinary's niacinamide is a solid option.", "If scarring is affecting your confidence or quality of life, a dermatologist can discuss treatment options."],
+    ]
+  },
+  {
+    keys: ['spf','sunscreen','sun','uv','sun protection'],
+    responses: [
+      ["Daily SPF is one of the most evidence-backed skincare steps — not just for preventing skin cancer but for preventing post-acne marks from darkening.", "For acne-prone skin, look for non-comedogenic, lightweight mineral or hybrid sunscreens. Altruist SPF 50 is a good affordable option available at dm.", "SPF should go on last in your morning routine, after any serums or treatments."],
+      ["Sun exposure can temporarily improve acne by drying out spots, but the UV damage causes inflammation that worsens acne longer-term. It's a false trade-off.", "A non-comedogenic SPF 30 or higher every morning is genuinely one of the most useful things for acne-prone skin."],
+    ]
+  },
+  {
+    keys: ['result','improve','better','worse','working','progress','how long'],
+    responses: [
+      ["How long improvement takes depends on what's driving your acne.", "For dietary changes, research shows effects typically take 8–12 weeks to become visible. For hormonal patterns, you need at least 2–3 full cycles of consistent logging before reliable patterns emerge.", "If you're on a prescribed treatment, response timelines vary: tretinoin typically 12–16 weeks, antibiotics 6–12 weeks, the pill 3–6 cycles."],
+      ["Progress with acne is rarely linear — most people see some weeks worse before things improve consistently.", "The most useful thing you can do right now is log consistently. The pattern data Lunara builds over 60–90 days will show you what's changing and what isn't.", "If you're not seeing any improvement after 3 months of consistent effort, a dermatologist appointment is the right next step."],
+    ]
+  },
+  {
+    keys: ['dermatologist','doctor','gp','prescription','see a doctor','appointment','referral'],
+    responses: [
+      ["A dermatologist is the right person to diagnose what's driving your acne and recommend treatment — particularly if it's moderate or severe.", "The best thing you can do before that appointment is bring data. Your Lunara doctor report (in the Profile tab) generates a 90-day summary of your skin, cycle, food and lifestyle logs that gives your dermatologist far more context than a standard consultation.", "In Germany, a referral from your GP (Hausarzt) is usually needed to see a dermatologist on statutory insurance (GKV)."],
+      ["If you haven't seen a dermatologist yet and your acne is affecting your quality of life, it's worth going. Adult hormonal acne responds well to treatment when properly diagnosed.", "Bring your Lunara data to the appointment — it shows your dermatologist your skin pattern across your cycle, which most patients can't provide from memory alone."],
+    ]
+  },
+  {
+    keys: ['pcos','polycystic','hormone test','blood test','testosterone','androgen','insulin resistance'],
+    responses: [
+      ["PCOS (polycystic ovary syndrome) is a hormonal condition that commonly causes acne, irregular periods, and elevated androgen levels.", "I can't assess whether you have PCOS — that requires a blood test and clinical evaluation. If your periods are irregular and your acne is severe, it's worth raising with your GP.", "If PCOS is suspected, your GP can arrange hormone blood tests and refer you to an endocrinologist or gynaecologist."],
+      ["Hormonal blood tests (testosterone, DHEA-S, LH/FSH ratio) can give important context for hormonal acne — but they need to be interpreted by a doctor alongside your full clinical picture.", "Lunara isn't able to interpret hormone test results. If you have test results you'd like context on, your GP or dermatologist is the right person to discuss them with."],
+    ]
+  },
+  {
+    keys: ['supplement','zinc','vitamin','omega 3','probiotic','spearmint'],
+    responses: [
+      ["Zinc has some supporting evidence for acne — several RCTs show modest improvement with zinc supplementation, though evidence is less strong than for topical treatments.", "Omega-3 supplementation showed significant acne reduction in a 2024 prospective study when omega-3 levels reached target range. Most acne patients in that study were deficient at baseline.", "Spearmint tea has some small study support for anti-androgenic effects in hormonal acne, though evidence is preliminary. Worth logging if you try it — you'll see whether it correlates with your skin."],
+      ["No supplement replaces evidence-based treatment, but some have supporting research worth knowing about.", "Zinc, omega-3 and probiotics have the most evidence. Effects, where they exist, appear over weeks to months.", "If you're considering supplements, log them in the lifestyle tab so Luni can look for any correlation with your skin over time."],
+    ]
+  },
+  {
+    keys: ['cycle','period','menstrual','irregular','track','phase','follicular','ovulat'],
+    responses: [
+      ["Your menstrual cycle has four phases — menstrual, follicular, ovulatory and luteal — each with a distinct hormonal profile that can affect your skin differently.", "Lunara tracks which phase you're in based on your last period date and average cycle length. This is an estimate — actual hormone levels vary between individuals.", "The more cycles you log, the more accurately Luni can identify whether your skin patterns align with specific phases."],
+      ["Irregular cycles make phase estimation less reliable — but the logging is still valuable. Consistent skin and lifestyle data across irregular cycles can still surface patterns over time.", "If your cycles are very irregular (more than 35 days, or unpredictable), it's worth mentioning to your GP — it can sometimes indicate an underlying hormonal condition."],
+    ]
+  },
+  {
+    keys: ['log','logging','track','how does','how do i','what should i log','start'],
+    responses: [
+      ["The most important things to log consistently are: your skin (daily photo or tag), sleep, stress, and food. These four give Luni enough data to start finding patterns after 6–8 weeks.", "You don't have to log everything perfectly every day. Consistent logging of even 2–3 factors is more useful than detailed logging that you stop after a week.", "Start from the home screen — sleep and stress log directly there in one tap. Skin goes through the Scan tab."],
+      ["Log what feels sustainable. The minimum useful dataset is: skin state daily, sleep quality, and period start dates. Everything else builds on that.", "Patterns take time to emerge — most meaningful correlations become visible after 2–3 full cycles. The goal isn't perfection, it's consistency."],
+    ]
+  },
+  {
+    keys: ['product','routine','cleanser','serum','moisturiser','toner','what should i use','recommend','which product'],
+    responses: [
+      ["I can check any product's ingredients against what's known about acne-prone skin — use the Scan tab to scan a barcode or search by name.", "For a personalised routine recommendation, a dermatologist is the right person. What I can tell you is which ingredients have good evidence: salicylic acid, niacinamide, azelaic acid, retinoids, benzoyl peroxide.", "The Routine tab shows your current shelf and lets you add products with AM/PM labels so Luni can track what you're using over time."],
+      ["Product suitability depends on your individual skin — I can flag known comedogenic ingredients and evidence-backed actives, but I can't tell you whether a specific product will work for you.", "The product log in the Routine tab is useful here: if you introduce a new product and your skin changes, Luni will flag the correlation in the Analysis tab after a few weeks of data."],
+    ]
+  },
+  {
+    keys: ['caffeine','coffee','alcohol','drink','water','hydration'],
+    responses: [
+      ["Caffeine and alcohol aren't strongly linked to acne in research — but both can affect cortisol and sleep quality, which are connected to acne.", "Dairy in coffee (milk, cream) is more likely to be relevant than the caffeine itself, if dairy is a trigger for you.", "Water intake is worth logging — hydration supports skin barrier function, though the direct acne link is modest."],
+      ["Alcohol can raise cortisol and disrupt sleep, both of which have acne connections. But the direct evidence linking alcohol to acne is weak.", "If you notice your skin is consistently worse after drinking, it's worth logging that as a lifestyle factor and letting Luni track the pattern over time."],
+    ]
+  },
+  {
+    keys: ['exercise','gym','sweat','sport','workout'],
+    responses: [
+      ["Exercise has complex effects on acne. It reduces stress and cortisol, which is positive. But sweat can clog pores, and intense exercise temporarily raises cortisol.", "The net effect for most people is positive — regular moderate exercise tends to improve skin over time through stress reduction and better sleep.", "If you notice breakouts after intense workouts, try cleansing your face promptly afterwards and consider whether your gym kit is touching your face or jaw."],
+      ["Log your exercise in the lifestyle tab. If there's a pattern between exercise intensity and your skin, Luni will surface it over time.", "Sweat itself doesn't cause acne, but it can aggravate existing congestion if left on skin — cleansing after exercise is worth doing."],
+    ]
+  },
+  {
+    keys: ['makeup','foundation','concealer','cosmetic','cover up'],
+    responses: [
+      ["Makeup can aggravate acne if it contains comedogenic ingredients — silicones, coconut oil, isopropyl myristate are the main ones to check.", "Non-comedogenic, mineral-based foundations are generally better tolerated by acne-prone skin. Scan any products you use regularly in the product scanner to check their ingredients.", "Removing makeup thoroughly before bed matters — makeup left on overnight can contribute to blocked pores."],
+      ["Heavy coverage products can sometimes make acne worse — not just from comedogenic ingredients but from the physical occlusion.", "If makeup is affecting your skin, try switching to mineral-based or explicitly non-comedogenic options. Many are available at dm and Rossmann."],
+    ]
+  },
+  {
+    keys: ['confident','confidence','anxious about','embarrassed','self conscious','mental health','affect my life','quality of life'],
+    responses: [
+      ["Acne's effect on mental health and confidence is real and well-documented in research — it's not superficial to find it distressing.", "Studies consistently show that acne has a significant impact on quality of life, comparable to conditions like asthma and diabetes in terms of psychological burden.", "If it's significantly affecting your daily life, it's worth raising with your GP — both for the skin and for the emotional impact. You don't have to just manage it alone."],
+      ["The emotional side of dealing with acne is often underacknowledged. You're not alone in finding it hard.", "Logging consistently and understanding your patterns — rather than just reacting to each breakout — can help give a sense of control over something that often feels uncontrollable.", "If you're struggling emotionally, talking to your GP or a therapist is a reasonable step alongside skincare."],
+    ]
+  },
+  {
+    keys: ['thank','thanks','helpful','great','good','love','amazing','perfect'],
+    responses: [
+      ["Glad that's useful. Keep logging — the more data Luni has, the more specific the patterns become.", "The more consistently you log, the better the picture gets. Any other questions?"],
+      ["Good to hear. The best thing you can do now is keep your daily log going — patterns become visible after a few consistent cycles."],
+    ]
+  },
+  {
+    keys: ['hello','hi','hey','hiya','morning','good morning','evening'],
+    responses: [
+      ["Hi! I can help you understand what research says about hormonal acne, or talk through what you're seeing in your logs. What's on your mind?"],
+      ["Hey! Ask me anything about your skin, cycle, or what might be affecting your acne. I'm here."],
+    ]
+  },
+];
+
+// Pick a response set, rotating to avoid repetition
+const luniResponseCounters = {};
+
+function getLuniResponse(msg) {
+  const lower = msg.toLowerCase();
+  // Find matching topic
+  for (const topic of luniTopics) {
+    if (topic.keys.some(k => lower.includes(k))) {
+      // Rotate through response variants
+      const key = topic.keys[0];
+      luniResponseCounters[key] = ((luniResponseCounters[key] || 0) + 1) % topic.responses.length;
+      return topic.responses[luniResponseCounters[key]];
+    }
+  }
+  // Intelligent fallback — acknowledge the question and guide toward logging
+  const fallbacks = [
+    ["That's something worth exploring. I don't have enough of your personal data yet to say anything specific — keep logging consistently and patterns will start to emerge across your next few cycles.", "If it's something that's been bothering you for a while, it might also be worth raising with a dermatologist who can assess it properly."],
+    ["Good question. The honest answer is: it depends on your individual skin, and that's exactly what logging over time helps figure out.", "Keep logging — skin, sleep, food and cycle. After 6–8 weeks of consistent data, Luni will be able to say something more specific to you."],
+    ["I want to give you a useful answer, not a generic one. Right now I don't have enough of your personal pattern data to speak specifically to your situation.", "The more you log, the better I can help. In the meantime, a dermatologist is always the best person for anything that feels urgent or serious."],
+  ];
+  const idx = Math.floor(Math.random() * fallbacks.length);
+  return fallbacks[idx];
+}
+
+function sendLuniChat() {
+  const inp = document.getElementById('luniInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  addLuniMsg(null, val);
+  inp.value = '';
+}
+
+function addLuniMsg(chip, text) {
+  const msg = text || chip.textContent;
+  const area = document.getElementById('luniChatArea');
+  // User bubble
+  const u = document.createElement('div');
+  u.className = 'msg user';
+  u.textContent = msg;
+  area.appendChild(u);
+  area.scrollTop = area.scrollHeight;
+  // Switch to luni screen if needed
+  if (!document.getElementById('screen-luni').classList.contains('active')) {
+    switchTab('luni', document.querySelector('[data-screen=luni]'));
+  }
+  // Luni typing delay
+  setTimeout(() => {
+    const ps = getLuniResponse(msg);
+    const b = document.createElement('div');
+    b.className = 'msg luni';
+    b.innerHTML = `<div class="lbl">Luni</div>${ps.map(p => `<p style="margin-bottom:5px;">${p}</p>`).join('')}<div class="msg-note">This is general information, not medical advice. For anything specific to your skin, a dermatologist is the right person to ask.</div>`;
+    area.appendChild(b);
+    area.scrollTop = area.scrollHeight;
+  }, 800);
+}
+
+// ── Scanner mode navigation ──
+function showScanMode(mode) {
+  document.querySelectorAll('.scan-subscreen').forEach(s => s.classList.remove('active'));
+  if (mode === 'skin') {
+    document.getElementById('scan-skin').classList.add('active');
+  } else if (mode === 'product') {
+    document.getElementById('scan-product').classList.add('active');
+  } else {
+    document.getElementById('scan-mode').classList.add('active');
+  }
+}
+
+function captureSkin() {
+  alert('In the real app this opens your camera. The photo is saved and mapped to your current cycle phase.');
+  markSkinLogged();
+  showScanMode('menu');
+  switchTab('home', document.querySelector('[data-screen=home]'));
+}
+
+function saveSkinLog() {
+  markSkinLogged();
+  showScanMode('menu');
+  switchTab('home', document.querySelector('[data-screen=home]'));
+}
+
+// ── AM/PM selectors ──
+function selAmPm(el) {
+  el.closest('.ampm-row').querySelectorAll('.ampm-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function selectAmPmResult(el, time) {
+  el.closest('div').querySelectorAll('.ampm-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+// ── Scanner product database ──
+// Simulated ingredient assessments — in the real app this comes from
+// Open Beauty Facts + a curated acne ingredient classification layer
+const scanProducts = {
+  demo: {
+    name: 'Balea Med Anti-Pickel', brand: 'dm · Balea', verdict: 'good',
+    verdictTitle: '✅ Good for acne-prone skin',
+    verdictSub: 'Contains salicylic acid — a well-evidenced active for acne. No comedogenic ingredients detected.',
+    ingredients: [
+      { name: 'Salicylic Acid 0.5%', tag: 'good', label: 'Exfoliates pores ✓' },
+      { name: 'Niacinamide', tag: 'good', label: 'Anti-inflammatory ✓' },
+      { name: 'Allantoin', tag: 'good', label: 'Soothing ✓' },
+      { name: 'No comedogenic ingredients', tag: 'good', label: 'Pore-safe ✓' },
+    ],
+    routineMatch: '✓ No overlap with your current routine. Complements your BHA well as a lighter daily option.',
+    where: ['dm'], icon: '🌿'
+  },
+  effaclar: {
+    name: 'Effaclar Purifying Foaming Gel', brand: 'La Roche-Posay', verdict: 'good',
+    verdictTitle: '✅ Good for acne-prone skin',
+    verdictSub: 'Dermatologist-tested for acne-prone skin. Non-comedogenic. Contains zinc to regulate sebum.',
+    ingredients: [
+      { name: 'Zinc Pidolate', tag: 'good', label: 'Sebum-regulating ✓' },
+      { name: 'Niacinamide', tag: 'good', label: 'Anti-inflammatory ✓' },
+      { name: 'No comedogenic ingredients', tag: 'good', label: 'Pore-safe ✓' },
+      { name: 'Fragrance-free', tag: 'good', label: 'Low irritant risk ✓' },
+    ],
+    routineMatch: '✓ Already on your shelf. You\'re using this product.',
+    where: ['Douglas', 'Rossmann', 'Amazon'], icon: '🧴'
+  },
+  nivea: {
+    name: 'Nivea Soft Moisturising Cream', brand: 'Nivea', verdict: 'caution',
+    verdictTitle: '⚠️ Worth checking for your skin',
+    verdictSub: 'Contains ingredients that may be comedogenic for some people with acne-prone skin.',
+    ingredients: [
+      { name: 'Isopropyl Myristate', tag: 'caution', label: 'Comedogenic risk' },
+      { name: 'Mineral Oil', tag: 'caution', label: 'Heavy occlusive' },
+      { name: 'Glycerin', tag: 'good', label: 'Hydrating ✓' },
+      { name: 'Fragrance', tag: 'caution', label: 'Potential irritant' },
+    ],
+    routineMatch: '⚠️ Not in your routine. You already use a non-comedogenic moisturiser — this may not be an upgrade for acne-prone skin.',
+    where: ['dm', 'Rossmann', 'Müller'], icon: '💛'
+  },
+  balea: {
+    name: 'Balea Med Ultra Sensitive Cleanser', brand: 'dm · Balea', verdict: 'good',
+    verdictTitle: '✅ Good for acne-prone skin',
+    verdictSub: 'Gentle, fragrance-free, no comedogenic ingredients. Good option for sensitive acne-prone skin.',
+    ingredients: [
+      { name: 'Panthenol', tag: 'good', label: 'Soothing ✓' },
+      { name: 'Glycerin', tag: 'good', label: 'Hydrating ✓' },
+      { name: 'No comedogenic ingredients', tag: 'good', label: 'Pore-safe ✓' },
+      { name: 'Fragrance-free', tag: 'good', label: 'Low irritant risk ✓' },
+    ],
+    routineMatch: '✓ Not in your routine yet. Would work well as a gentle AM cleanser alongside your current products.',
+    where: ['dm'], icon: '🌿'
+  }
+};
+
+let currentScanProduct = null;
+let scanResultAmPm = null;
+
+// ── Shop availability helper ──
+// Cross-references product's where[] against user's onboarding shops.
+// Returns HTML showing available at preferred shops, then other shops.
+function getShopAvailabilityHTML(productWhere) {
+  const userShops = profile.shops || [];
+  if (!productWhere || productWhere.length === 0) return '';
+
+  // Normalise for comparison
+  const preferred = productWhere.filter(w =>
+    userShops.some(u => w.toLowerCase().includes(u.toLowerCase()) || u.toLowerCase().includes(w.toLowerCase()))
+  );
+  const others = productWhere.filter(w => !preferred.includes(w));
+
+  let html = '<div class="shop-avail">';
+  if (preferred.length > 0) {
+    html += preferred.map(w =>
+      `<span class="shop-chip preferred">✓ Available at ${w}</span>`
+    ).join('');
+  }
+  if (others.length > 0) {
+    html += others.map(w =>
+      `<span class="shop-chip other">Available at ${w}</span>`
+    ).join('');
+  }
+  if (preferred.length === 0 && userShops.length > 0) {
+    html += `<span class="shop-chip none">Not available in your usual shops</span>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function showScanResult(key) {
+  const product = scanProducts[key] || scanProducts['demo'];
+  currentScanProduct = { key, ...product };
+
+  document.getElementById('scanProductName').textContent = product.name;
+  document.getElementById('scanProductBrand').textContent = product.brand;
+
+  const verdict = document.getElementById('scanVerdict');
+  verdict.className = 'scan-verdict ' + product.verdict;
+  document.getElementById('scanVerdictTitle').textContent = product.verdictTitle;
+  document.getElementById('scanVerdictSub').textContent = product.verdictSub;
+
+  document.getElementById('scanIngredients').innerHTML = product.ingredients.map(i =>
+    `<div class="scan-ingr-row"><span class="scan-ingr-name">${i.name}</span><span class="scan-ingr-tag ${i.tag}">${i.label}</span></div>`
+  ).join('');
+
+  document.getElementById('scanRoutineMatch').innerHTML =
+    `<div class="scan-routine-match-label">Your routine</div><div class="scan-routine-match-text">${product.routineMatch}</div>`;
+
+  // Shop availability — uses onboarding shops from profile
+  const shopHTML = getShopAvailabilityHTML(product.where || []);
+  let shopEl = document.getElementById('scanShopAvail');
+  if (!shopEl) {
+    shopEl = document.createElement('div');
+    shopEl.id = 'scanShopAvail';
+    shopEl.style.margin = '10px 16px 0';
+    document.getElementById('scanRoutineMatch').after(shopEl);
+  }
+  if (shopHTML) {
+    shopEl.innerHTML = `<div class="scan-routine-match-label" style="padding:0 0 4px;">Where to buy</div>${shopHTML}`;
+    shopEl.style.display = 'block';
+  } else {
+    shopEl.style.display = 'none';
+  }
+
+  // show AM/PM picker
+  const ampmCard = document.getElementById('scanAmPmCard');
+  ampmCard.style.display = 'block';
+  ampmCard.querySelectorAll('.ampm-opt').forEach(o => o.classList.remove('sel'));
+  scanResultAmPm = null;
+
+  const addBtn = document.getElementById('scanAddBtn');
+  addBtn.textContent = '+ Add to my shelf';
+  addBtn.classList.remove('added');
+  addBtn.disabled = false;
+
+  document.getElementById('scanResult').classList.add('show');
+  document.getElementById('scanResult').scrollTop = 0;
+}
+
+function closeScanResult() {
+  document.getElementById('scanResult').classList.remove('show');
+}
+
+function addToShelf() {
+  const btn = document.getElementById('scanAddBtn');
+  const ampmSel = document.querySelector('#scanAmPmCard .ampm-opt.sel');
+  const ampm = ampmSel ? ampmSel.textContent : '';
+  btn.textContent = ampm ? `Added to shelf ${ampm} ✓` : 'Added to shelf ✓';
+  btn.classList.add('added');
+  btn.disabled = true;
+  setTimeout(() => closeScanResult(), 1400);
+}
+
+// ── Add Product Modal ──
+// Product database for the modal — assessed on ingredient evidence only
+// Badges: great = acne-appropriate with positive actives
+//         ok = non-comedogenic, no concerns
+//         care = one ingredient worth watching
+//         check = comedogenic ingredient present
+const modalProducts = [
+  { icon:'🧴', name:'La Roche-Posay Effaclar', sub:'Foaming Cleanser · ~€12', match:'great', matchLabel:'✅ Great match', safe:true, safeLabel:'Safe for your skin', tags:['u15'], keyIngredients:'Zinc PCA, Niacinamide — reduces sebum', noProblematic:true, where:['dm','Rossmann','Douglas'], sample:false, origin:'eu' },
+  { icon:'🧪', name:'The Ordinary Niacinamide 10%', sub:'Serum · ~€6', match:'great', matchLabel:'✅ Great match', safe:true, safeLabel:'Safe for your skin', tags:['u15'], keyIngredients:'Niacinamide 10%, Zinc PCA — anti-inflammatory, sebum control', noProblematic:true, where:['Douglas','Amazon','Rossmann'], sample:true, origin:'eu' },
+  { icon:'💧', name:"Paula's Choice BHA 2%", sub:'Exfoliant Toner · ~€32', match:'care', matchLabel:'⚠️ Use with care', safe:false, safeLabel:'⚠️ Check ingredients', tags:['u35'], keyIngredients:'Salicylic Acid 2% — exfoliates pores. Do not combine with retinol same night.', noProblematic:false, where:['Amazon','paulaschoice.eu'], sample:true, origin:'eu' },
+  { icon:'🫧', name:'Cetaphil Gentle Cleanser', sub:'Hydrating Cleanser · ~€9', match:'care', matchLabel:'⚠️ Check formula', safe:false, safeLabel:'⚠️ Check ingredients', tags:['u15'], keyIngredients:'Contains some ingredients that may not suit all acne-prone skin — check full INCI list.', noProblematic:false, where:['dm','Rossmann','Müller'], sample:false, origin:'eu' },
+  { icon:'☀️', name:'Altruist SPF 50', sub:'Sunscreen · ~€3', match:'great', matchLabel:'✅ Great match', safe:true, safeLabel:'Safe for your skin', tags:['u5','u15'], keyIngredients:'Tinosorb S, Uvinul A Plus — broad-spectrum UV protection, no comedogenic ingredients', noProblematic:true, where:['dm','Amazon'], sample:false, origin:'eu' },
+  { icon:'🌿', name:'Azelaic Acid 10%', sub:"Treatment · Paula's Choice · ~€38", match:'great', matchLabel:'✅ Great match', safe:true, safeLabel:'Safe for your skin', tags:['u35'], keyIngredients:'Azelaic Acid 10% — RCT-supported for comedonal and inflammatory acne', noProblematic:true, where:['Amazon','paulaschoice.eu'], sample:true, origin:'eu' },
+  { icon:'🫧', name:'CeraVe Hydrating Cleanser', sub:'Gentle Cleanser · ~€11', match:'ok', matchLabel:'✅ Match', safe:true, safeLabel:'Safe for your skin', tags:['u15'], keyIngredients:'Ceramides, Hyaluronic Acid — barrier repair, non-comedogenic', noProblematic:true, where:['dm','Rossmann','Amazon'], sample:false, origin:'eu' },
+  { icon:'🌿', name:'The Ordinary Retinol 0.5%', sub:'Retinoid Treatment · ~€5', match:'care', matchLabel:'⚠️ Use with care', safe:false, safeLabel:'⚠️ Check ingredients', tags:['u5','u15'], keyIngredients:'Retinol 0.5% — evidence-backed for acne but causes purging in first 6–12 weeks. Not same night as BHA.', noProblematic:false, where:['Douglas','Amazon'], sample:false, origin:'eu' },
+  { icon:'🍃', name:'COSRX BHA Blackhead Power Liquid', sub:'Toner · COSRX · ~€22', match:'great', matchLabel:'✅ Great match', safe:true, safeLabel:'Safe for your skin', tags:['u35','korean'], keyIngredients:'Betaine Salicylate — gentle BHA, effective for blackheads and clogged pores', noProblematic:true, where:['Yesstyle','Amazon','Douglas'], sample:false, origin:'korean' },
+  { icon:'🍵', name:'Innisfree Green Tea Seed Serum', sub:'Serum · Innisfree · ~€28', match:'ok', matchLabel:'✅ Match', safe:true, safeLabel:'Safe for your skin', tags:['u35','korean'], keyIngredients:'Green Tea Extract — anti-inflammatory, antioxidant', noProblematic:true, where:['Yesstyle','Amazon'], sample:true, origin:'korean' },
+  { icon:'🌸', name:'Skin1004 Madagascar Centella Ampoule', sub:'Serum · ~€18', match:'great', matchLabel:'✅ Great match', safe:true, safeLabel:'Safe for your skin', tags:['u35','korean'], keyIngredients:'Centella Asiatica 100% — strong anti-inflammatory, soothing for acne irritation', noProblematic:true, where:['Yesstyle','Amazon'], sample:false, origin:'korean' },
+  { icon:'🌱', name:'Dr. Hauschka Cleansing Milk', sub:'Cleanser · ~€24 · Organic', match:'care', matchLabel:'⚠️ Check formula', safe:false, safeLabel:'⚠️ Check ingredients', tags:['u35','organic'], keyIngredients:'Natural oils may be comedogenic for some skin types. Check if suitable for your skin.', noProblematic:false, where:['dm','Müller','Douglas'], sample:true, origin:'organic' },
+  { icon:'💊', name:'Balea Med Anti-Pickel Serum', sub:'Treatment Serum · ~€4', match:'great', matchLabel:'✅ Great match', safe:true, safeLabel:'Safe for your skin', tags:['u5','u15'], keyIngredients:'Salicylic Acid 0.5%, Niacinamide — exfoliates pores, anti-inflammatory', noProblematic:true, where:['dm'], sample:false, origin:'eu' },
+];
+
+let activeFilter = 'all';
+let expandedProduct = null;
+
+function openAddProduct() {
+  renderModalProducts(modalProducts);
+  document.getElementById('addProductModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeAddProduct() {
+  document.getElementById('addProductModal').classList.remove('show');
+  document.body.style.overflow = '';
+  expandedProduct = null;
+}
+function handleModalOverlayClick(e) {
+  if (e.target === document.getElementById('addProductModal')) closeAddProduct();
+}
+
+function setFilter(el, filter) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  activeFilter = filter;
+  const searchVal = document.querySelector('.modal-search input')?.value || '';
+  filterProducts(searchVal);
+}
+
+function filterProducts(searchVal) {
+  let filtered = modalProducts.filter(p => {
+    const matchesSearch = !searchVal || p.name.toLowerCase().includes(searchVal.toLowerCase()) || p.sub.toLowerCase().includes(searchVal.toLowerCase());
+    const matchesFilter = activeFilter === 'all' ||
+      (activeFilter === 'u5' && p.tags.includes('u5')) ||
+      (activeFilter === 'u15' && (p.tags.includes('u5') || p.tags.includes('u15'))) ||
+      (activeFilter === 'u35' && (p.tags.includes('u5') || p.tags.includes('u15') || p.tags.includes('u35'))) ||
+      (activeFilter === 'korean' && p.tags.includes('korean')) ||
+      (activeFilter === 'organic' && p.tags.includes('organic')) ||
+      (activeFilter === 'sample' && p.sample);
+    return matchesSearch && matchesFilter;
+  });
+  renderModalProducts(filtered);
+}
+
+function renderModalProducts(products) {
+  const list = document.getElementById('modalProductList');
+  if (products.length === 0) {
+    list.innerHTML = '<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px;">No products found — try a different search or filter</div>';
+    return;
+  }
+  list.innerHTML = products.map((p, i) => `
+    <div class="modal-product" id="mp${i}">
+      <div class="modal-product-row" onclick="toggleModalProduct(${i})">
+        <span class="modal-product-icon">${p.icon}</span>
+        <div class="modal-product-info">
+          <div class="modal-product-name">${p.name}</div>
+          <div class="modal-product-sub">${p.sub}</div>
+          <div class="modal-product-tags">
+            <span class="modal-safe-tag ${p.safe ? 'good' : 'caution'}">${p.safe ? '✓ ' : '⚠️ '}${p.safeLabel}</span>
+          </div>
+        </div>
+        <span class="modal-match-badge ${p.match}">${p.matchLabel}</span>
+      </div>
+      <div class="modal-product-detail">
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">Key ingredients</div>
+          <div class="modal-detail-text">${p.keyIngredients}</div>
+          ${p.noProblematic ? '<div class="modal-detail-text ok" style="margin-top:3px;">✓ No problematic ingredients for acne-prone skin</div>' : ''}
+        </div>
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">Where to buy</div>
+          ${getShopAvailabilityHTML(p.where)}
+          ${p.sample ? '<div style="margin-top:6px;"><span class="modal-sample-chip">🧪 Sample / travel size available</span></div>' : ''}
+        </div>
+        <button class="modal-add-btn" id="mab${i}" onclick="addProductFromModal(${i},'${p.name}')">+ Add to my routine</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleModalProduct(i) {
+  const el = document.getElementById('mp' + i);
+  const wasExpanded = el.classList.contains('expanded');
+  document.querySelectorAll('.modal-product').forEach(p => p.classList.remove('expanded'));
+  if (!wasExpanded) el.classList.add('expanded');
+}
+
+function addProductFromModal(i, name) {
+  const btn = document.getElementById('mab' + i);
+  btn.textContent = 'Added to routine ✓';
+  btn.classList.add('added');
+  btn.disabled = true;
+  setTimeout(() => closeAddProduct(), 1000);
+}
+
+// ── Cycle tab init ──
+function initCycleTab() {
+  // Render a simple calendar for period start date
+  renderCal('cycleCal', null, d => {
+    // In real app: update profile.lastPeriod and recalculate phase
+  });
+  // Update phase display from profile if available
+  if (profile.lastPeriod) {
+    const today = new Date();
+    const daysSince = Math.floor((today - profile.lastPeriod) / 86400000) + 1;
+    const cycleDay = ((daysSince - 1) % profile.cycleLength) + 1;
+    const phase = getPhase(cycleDay, profile.cycleLength);
+    const el = document.getElementById('cyclePhaseLabel');
+    const dayEl = document.getElementById('cyclePhaseDay');
+    const emojiEl = document.getElementById('cyclePhaseEmoji');
+    if (el) el.textContent = phase + ' phase';
+    if (dayEl) dayEl.textContent = `Day ${cycleDay} of ${profile.cycleLength} · estimated from your last period`;
+    if (emojiEl) emojiEl.textContent = phaseEmoji(phase);
+  }
+}
+
+// ── Skin Timeline ──
+// Demo skin log data — in the real app this comes from the user's logged entries.
+// Each entry has: date, emoji (placeholder for photo), cycle phase,
+// spots logged, skin feel logged, food summary, sleep logged.
+// No AI skin scores — all data is user-reported.
+const skinEntries = [
+  { date:'May 11', emoji:'😐', phase:'Follicular', spots:['None'], feel:['Clear'], food:'Oats, salmon, coffee', sleep:'6–8h' },
+  { date:'May 10', emoji:'🙂', phase:'Follicular', spots:['None'], feel:['Clear','Oily'], food:'Salad, pasta', sleep:'6–8h' },
+  { date:'May 9', emoji:'😐', phase:'Follicular', spots:['Chin'], feel:['Oily'], food:'Pizza, beer', sleep:'Under 6h' },
+  { date:'May 8', emoji:'😟', phase:'Luteal', spots:['Chin','Jawline'], feel:['Inflamed','Oily'], food:'Chocolate, dairy', sleep:'Under 6h' },
+  { date:'May 7', emoji:'😟', phase:'Luteal', spots:['Jawline'], feel:['Sensitive','Inflamed'], food:'Oats, fruit', sleep:'6–8h' },
+  { date:'May 6', emoji:'😐', phase:'Luteal', spots:['Chin'], feel:['Oily'], food:'Rice, chicken', sleep:'6–8h' },
+  { date:'May 5', emoji:'🙂', phase:'Luteal', spots:['None'], feel:['Clear'], food:'Salmon, greens', sleep:'8h+' },
+  { date:'May 4', emoji:'🙂', phase:'Luteal', spots:['None'], feel:['Clear'], food:'Oats, eggs', sleep:'8h+' },
+  { date:'May 3', emoji:'😐', phase:'Luteal', spots:['Chin'], feel:['Oily'], food:'Pasta, milk', sleep:'6–8h' },
+  { date:'May 2', emoji:'😟', phase:'Menstrual', spots:['Chin','Forehead'], feel:['Inflamed','Sensitive'], food:'Light meals', sleep:'6–8h' },
+  { date:'May 1', emoji:'😟', phase:'Menstrual', spots:['Jawline','Chin'], feel:['Inflamed'], food:'Soup, fruit', sleep:'6–8h' },
+  { date:'Apr 30', emoji:'😐', phase:'Menstrual', spots:['Chin'], feel:['Sensitive'], food:'Rice, veg', sleep:'6–8h' },
+  { date:'Apr 29', emoji:'😐', phase:'Menstrual', spots:['Chin'], feel:['Dry','Sensitive'], food:'Oats, water', sleep:'8h+' },
+  { date:'Apr 28', emoji:'🙂', phase:'Follicular', spots:['None'], feel:['Clear'], food:'Salmon, salad', sleep:'8h+' },
+  { date:'Apr 27', emoji:'🙂', phase:'Follicular', spots:['None'], feel:['Clear'], food:'Eggs, greens', sleep:'8h+' },
+  { date:'Apr 26', emoji:'😊', phase:'Follicular', spots:['None'], feel:['Clear'], food:'Fruit bowl, fish', sleep:'8h+' },
+  { date:'Apr 25', emoji:'🙂', phase:'Follicular', spots:['None'], feel:['Clear'], food:'Oats, nuts', sleep:'6–8h' },
+  { date:'Apr 24', emoji:'😐', phase:'Ovulatory', spots:['Forehead'], feel:['Oily'], food:'Burger, fries', sleep:'Under 6h' },
+  { date:'Apr 23', emoji:'😊', phase:'Ovulatory', spots:['None'], feel:['Clear'], food:'Salmon, rice', sleep:'8h+' },
+];
+
+let activeTimelineIdx = null;
+
+function renderTimeline() {
+  const container = document.getElementById('skinTimeline');
+  if (!container) return;
+  container.innerHTML = skinEntries.map((e, i) => `
+    <div class="timeline-entry ${activeTimelineIdx===i?'active-entry':''}" onclick="selectTimelineEntry(${i})">
+      <div class="timeline-face">${e.emoji}</div>
+      <div class="timeline-meta">
+        <div class="timeline-date">${e.date}</div>
+        <div class="timeline-phase">${e.phase}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectTimelineEntry(i) {
+  const detail = document.getElementById('timelineDetail');
+  if (!detail) return;
+  if (activeTimelineIdx === i) {
+    // toggle off
+    activeTimelineIdx = null;
+    detail.classList.remove('show');
+    renderTimeline();
+    return;
+  }
+  activeTimelineIdx = i;
+  renderTimeline();
+  const e = skinEntries[i];
+  detail.classList.add('show');
+  detail.innerHTML = `
+    <div class="timeline-detail-date">${e.date} · ${e.phase} phase</div>
+    <div class="timeline-detail-row">
+      <span class="timeline-detail-label">Spots</span>
+      <div class="timeline-tags">${e.spots.map(s=>`<span class="timeline-tag">${s}</span>`).join('')}</div>
+    </div>
+    <div class="timeline-detail-row">
+      <span class="timeline-detail-label">Skin feel</span>
+      <div class="timeline-tags">${e.feel.map(f=>`<span class="timeline-tag">${f}</span>`).join('')}</div>
+    </div>
+    <div class="timeline-detail-row">
+      <span class="timeline-detail-label">Sleep</span>
+      <span>${e.sleep}</span>
+    </div>
+    <div class="timeline-detail-row">
+      <span class="timeline-detail-label">Food</span>
+      <span style="color:var(--muted)">${e.food}</span>
+    </div>
+  `;
+  // scroll the selected card into view
+  const card = document.getElementById('skinTimeline').children[i];
+  if (card) card.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+}
+
+function shiftMonth(dir) {
+  // In the real app this loads a different month of entries.
+  // Here we just show a message since demo data is fixed.
+  alert(dir < 0 ? 'Showing April — in the real app this loads your April entries.' : 'No future data yet — keep logging!');
+}
+
+// Initialise timeline when skin tab is opened
+const _origSwitchLogTab = switchLogTab;
+// Wrap switchLogTab to also init timeline
+function switchLogTab(id, el) {
+  document.querySelectorAll('.log-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.log-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('log-'+id).classList.add('active');
+  if (id === 'skin') renderTimeline();
+  if (id === 'cycle') initCycleTab();
+}
+
+step0();
+</script>
+</body>
+</html>
